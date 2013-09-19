@@ -5,10 +5,10 @@ from cgi import parse_qs, escape
 from mimetypes import guess_type
 
 #Go ahead and open the templates, we're bound to need them
-templates = {"404" : open("404.html").read(),
+templates = {"404" : open("templates/404.html").read(),
              "index" : open("index.html").read(),
-             "post" : open("post.html").read(),
-             "admin" : open("admin.html").read()}
+             "post" : open("templates/post.html").read(),
+             "admin" : open("templates/admin.html").read()}
 
 #This will be in the database
 posts = []
