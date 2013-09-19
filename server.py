@@ -35,8 +35,12 @@ def application(environ, start_response):
    add_post(post)
 
    #FIXME make this safer
-   response_body = open(environ["PATH_INFO"][1:]).read().format(posts = posts or 'None')
+   try:
+      response_body = open(environ["PATH_INFO"][1:]).read().format(posts = posts or 'None')
 
+   except IOError:
+      response_body = open("404.html").read()
+   
    status = '200 OK'
 
    response_headers = [('Content-Type', 'text/html'),
