@@ -47,7 +47,7 @@ def application(environ, start_response):
    except (ValueError):
       request_body_size = 0 
 
-   #Different handling for POST/GET. This prevents new posts on page refresh
+   #Different handling for POST/GET. 
    if environ["REQUEST_METHOD"] == "POST":
       request_body = environ['wsgi.input'].read(request_body_size)
       d = parse_qs(request_body)
@@ -77,8 +77,10 @@ def application(environ, start_response):
 
 
    #Impliment PRG to prevent form resubmission
-   if environ["REQUEST_METHOD"] == "POST" or environ["PATH_INFO"] == "/":
+   if environ["PATH_INFO"] == "/":
       start_response('301 REDIRECT', [('Location', 'http://localhost:8051/index.html')])
+   elif environ["REQUEST_METHOD"] == "POST":
+      start_response('301 REDIRECT', [('Location', 'http://localhost:8051' + environ["PATH_INFO"])])
    else:
       start_response(status, response_headers)
 
