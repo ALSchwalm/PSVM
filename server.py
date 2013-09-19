@@ -7,8 +7,8 @@ from mimetypes import guess_type
 #Go ahead and open the templates, we're bound to need them
 templates = {"404" : open("404.html").read(),
              "index" : open("index.html").read(),
-             "post" : open("post.html").read()}
-
+             "post" : open("post.html").read(),
+             "admin" : open("admin.html").read()}
 
 #This will be in the database
 posts = []
@@ -18,7 +18,7 @@ def add_post(post):
    global posts
    posts.append(post)
 
-def get_posts():
+def compose_posts():
    global posts
    post_template = templates["post"]
    return "".join([post_template.format(content=body) for body in posts])
@@ -28,16 +28,19 @@ def compose_page(page_name):
    page = ""
 
    #Compose any known page
-   if page_name == "/index.html":
-      page = templates["index"].format(posts = get_posts() or 'None')
+   if page_name == "/index.html" or page_name == "/":
+      page = templates["index"].format(posts = compose_posts() or 'None')
+
+   elif page_name == "/admin.html":
+      page = templates["admin"]
 
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
    else:
       page = open(page_name[1:]).read()
-      
+
    return page
-   
+
 def application(environ, start_response):
    # the environment variable CONTENT_LENGTH may be empty or missing
    try:
@@ -60,18 +63,24 @@ def application(environ, start_response):
    try:
       response_body = compose_page(environ["PATH_INFO"])
       status = '200 OK'
-
-      #Determine MIME type
-      response_headers = [('Content-Type', guess_type(environ["PATH_INFO"])[0]),
-                          ('Content-Length', str(len(response_body)))]
       
+      #Determine MIME type
+      mime = guess_type(environ["PATH_INFO"])[0] or "text/html" #default to text/html
+      
+      response_headers = [('Content-Type', mime),
+                          ('Content-Length', str(len(response_body)))]
+
    except IOError:
       response_body = templates["404"]
       status = '404 File not found'
       response_headers = [('Content-Type', 'text/html'),
                           ('Content-Length', str(len(response_body)))]
-      
-   start_response(status, response_headers)
+
+   #Impliment PRG to prevent form resubmission
+   if environ["REQUEST_METHOD"] == "POST":
+      start_response('301 Redirect', [('Location', 'http://localhost:8051')])
+   else:
+      start_response(status, response_headers)
 
    return [response_body]
 
