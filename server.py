@@ -26,9 +26,8 @@ def compose_posts():
 #bulk of the work ocurrs here
 def compose_page(page_name):
    page = ""
-
    #Compose any known page
-   if page_name == "/index.html" or page_name == "/":
+   if page_name == "/index.html" or page_name == "/" or page_name == "":
       page = templates["index"].format(posts = compose_posts() or 'None')
 
    elif page_name == "/admin.html":
@@ -72,13 +71,14 @@ def application(environ, start_response):
 
    except IOError:
       response_body = templates["404"]
-      status = '404 File not found'
+      status = '404 NOT FOUND'
       response_headers = [('Content-Type', 'text/html'),
                           ('Content-Length', str(len(response_body)))]
 
+
    #Impliment PRG to prevent form resubmission
-   if environ["REQUEST_METHOD"] == "POST":
-      start_response('301 Redirect', [('Location', 'http://localhost:8051')])
+   if environ["REQUEST_METHOD"] == "POST" or environ["PATH_INFO"] == "/":
+      start_response('301 REDIRECT', [('Location', 'http://localhost:8051/index.html')])
    else:
       start_response(status, response_headers)
 
