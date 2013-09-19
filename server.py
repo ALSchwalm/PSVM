@@ -2,6 +2,7 @@
 
 from wsgiref.simple_server import make_server
 from cgi import parse_qs, escape
+from mimetypes import guess_type
 
 #Go ahead and open the templates, we're bound to need them
 templates = {"404" : open("404.html").read(),
@@ -21,10 +22,23 @@ def get_posts():
    global posts
    post_template = templates["post"]
    return "".join([post_template.format(content=body) for body in posts])
-   
+
+#bulk of the work ocurrs here
+def compose_page(page_name):
+   page = ""
+
+   #Compose any known page
+   if page_name == "/index.html":
+      page = templates["index"].format(posts = get_posts() or 'None')
+
+   #Try to open anything else. Useful for javascript etc.
+   #TODO this is (very) possibly unsafe
+   else:
+      page = open(page_name[1:]).read()
+      
+   return page
    
 def application(environ, start_response):
-   
    # the environment variable CONTENT_LENGTH may be empty or missing
    try:
       request_body_size = int(environ.get('CONTENT_LENGTH', 0))
@@ -43,23 +57,20 @@ def application(environ, start_response):
 
       add_post(new_post)
 
-   #FIXME make this safer
    try:
-      response_body = open(environ["PATH_INFO"][1:]).read().format(posts = get_posts() or 'None')
+      response_body = compose_page(environ["PATH_INFO"])
       status = '200 OK'
+
+      #Determine MIME type
+      response_headers = [('Content-Type', guess_type(environ["PATH_INFO"])[0]),
+                          ('Content-Length', str(len(response_body)))]
       
    except IOError:
       response_body = templates["404"]
       status = '404 File not found'
-
-   #correct MIME type for js
-   #TODO find a better way to do this
-   if environ["PATH_INFO"][-3:] == ".js":
-      response_headers = [('Content-Type', 'text/javascript'),
-                          ('Content-Length', str(len(response_body)))]
-   else:
       response_headers = [('Content-Type', 'text/html'),
                           ('Content-Length', str(len(response_body)))]
+      
    start_response(status, response_headers)
 
    return [response_body]
