@@ -3,8 +3,18 @@
 from wsgiref.simple_server import make_server
 from cgi import parse_qs, escape
 
-def application(environ, start_response):
+posts = ""
 
+def add_post(post):
+   global posts
+   if post:
+      #This will eventually be put in the database
+      posts += open("post.html").read().format(content=post)
+
+   
+def application(environ, start_response):
+   global posts
+   
    # the environment variable CONTENT_LENGTH may be empty or missing
    try:
       request_body_size = int(environ.get('CONTENT_LENGTH', 0))
@@ -17,15 +27,15 @@ def application(environ, start_response):
    request_body = environ['wsgi.input'].read(request_body_size)
    d = parse_qs(request_body)
 
-   age = d.get('age', [''])[0] # Returns the first age value.
-   hobbies = d.get('hobbies', []) # Returns a list of hobbies.
+   post = d.get('new_post', [''])[0] # Returns the first age value.
 
    # Always escape user input to avoid script injection
-   age = escape(age)
-   hobbies = [escape(hobby) for hobby in hobbies]
+   post = escape(post)
 
-   response_body = open(environ["PATH_INFO"][1:]).read().format(age= age or 'Empty',
-                                                                hobbies = ', '.join(hobbies or ['No Hobbies']))
+   add_post(post)
+
+   #FIXME make this safer
+   response_body = open(environ["PATH_INFO"][1:]).read().format(posts = posts or 'None')
 
    status = '200 OK'
 
