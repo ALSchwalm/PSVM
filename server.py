@@ -3,6 +3,7 @@
 from wsgiref.simple_server import make_server
 from cgi import parse_qs, escape
 from mimetypes import guess_type
+import Cookie
 
 #Go ahead and open the templates, we're bound to need them
 templates = {"404" : open("templates/404.html").read(),
@@ -10,6 +11,8 @@ templates = {"404" : open("templates/404.html").read(),
              "post" : open("templates/post.html").read(),
              "login" : open("templates/login.html").read()}
 
+URL = "http://localhost:8051"			 
+ 
 #This will be in the database
 posts = []
 
@@ -23,7 +26,7 @@ def compose_posts():
    post_template = templates["post"]
    return "".join([post_template.format(content=body) for body in posts])
 
-def handle_POST(action, options):
+def handle_POST(action, environ, options):
    if action == "/new_post":
       new_post = options.get('new_post', [''])[0]
 
@@ -31,25 +34,30 @@ def handle_POST(action, options):
       new_post = escape(new_post)
 
       add_post(new_post)
-      return "/index.html"
+      return [('Location', URL + "/index.html")]
 
    #TODO redirect to success or failure
    elif action == "/login":
-      return "/index.html"
+      #TODO get this from database
+      return [('Location', URL + "/index.html"), ('Set-Cookie', "PSVM=1234asdfabasdf")]
       
    else:
-      return action
+      return [('Location', URL + action)]
    
 #bulk of the work ocurrs here
-def compose_page(page_name):
+def compose_page(environ):
    page = ""
-   
+   page_name = environ["PATH_INFO"]
    #Compose any known page
    if page_name == "/index.html" or page_name == "/" or page_name == "":
-      page = templates["index"].format(posts = compose_posts() or 'None')
+      try:
+        Cookie.SimpleCookie(environ.get("HTTP_COOKIE",""))["PSVM"].value
+        page = templates["index"].format(posts = compose_posts() or 'None')
+      except KeyError:
+        page = templates["index"].format(posts = compose_posts() or 'None')
 
    elif page_name == "/login.html":
-      page = templates["login"]
+        page = templates["login"]
 
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
@@ -66,15 +74,15 @@ def application(environ, start_response):
       request_body_size = 0 
 
    path = environ["PATH_INFO"]
-      
+
    #Different handling for POST/GET. POSTS may require redirection etc.
    if environ["REQUEST_METHOD"] == "POST":
       request_body = environ['wsgi.input'].read(request_body_size)
       d = parse_qs(request_body)
-      path = handle_POST(path, d)
+      post_header  = handle_POST(path, environ,  d)
 
    try:
-      response_body = compose_page(path)
+      response_body = compose_page(environ)
       status = '200 OK'
       
       #Determine MIME type
@@ -91,9 +99,9 @@ def application(environ, start_response):
 
    #Impliment PRG to prevent form resubmission
    if path == "/":
-         start_response('301 REDIRECT', [('Location', 'http://localhost:8051/index.html')])
+      start_response('301 REDIRECT', [('Location', URL + "/index.html")])
    elif environ["REQUEST_METHOD"] == "POST":
-      start_response('301 REDIRECT', [('Location', 'http://localhost:8051' + path)])
+      start_response('301 REDIRECT', post_header)
    else:
       start_response(status, response_headers)
 
