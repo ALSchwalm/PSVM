@@ -9,12 +9,25 @@ import Cookie
 templates = {"404" : open("templates/404.html").read(),
              "index" : open("index.html").read(),
              "post" : open("templates/post.html").read(),
-             "login" : open("templates/login.html").read()}
+             "login" : open("templates/login.html").read(),
+             "login_link" : open("templates/login_link.html").read()}
 
-URL = "http://localhost:8051"			 
+URL = "http://localhost:8051"
  
 #This will be in the database
 posts = []
+
+def is_login(environ):
+   try:
+      c = Cookie.SimpleCookie(environ.get("HTTP_COOKIE",""))
+      user_id = c["USERID"].value
+      password_hash = c["PASSHASH"].value
+      #TODO Check these are actually correct
+      return user_id
+
+   except KeyError:
+      return False
+
 
 #these methods will hit the database 
 def add_post(post):
@@ -39,7 +52,7 @@ def handle_POST(action, environ, options):
    #TODO redirect to success or failure
    elif action == "/login":
       #TODO get this from database
-      return [('Location', URL + "/index.html"), ('Set-Cookie', "PSVM=1234asdfabasdf")]
+      return [('Location', URL + "/index.html"), ("Set-Cookie", "USERID=123456"), ("Set-Cookie", "PASSHASH=abc123")]
       
    else:
       return [('Location', URL + action)]
@@ -50,14 +63,10 @@ def compose_page(environ):
    page_name = environ["PATH_INFO"]
    #Compose any known page
    if page_name == "/index.html" or page_name == "/" or page_name == "":
-      try:
-        Cookie.SimpleCookie(environ.get("HTTP_COOKIE",""))["PSVM"].value
-        page = templates["index"].format(posts = compose_posts() or 'None')
-      except KeyError:
-        page = templates["index"].format(posts = compose_posts() or 'None')
+      page = templates["index"].format(posts = compose_posts() or 'None', login_link=is_login(environ) or templates["login_link"])
 
    elif page_name == "/login.html":
-        page = templates["login"]
+      page = templates["login"]
 
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
