@@ -43,13 +43,16 @@ def compose_posts():
 
 def handle_POST(action, environ, options):
    if action == "/new_post":
-      new_post = options.get('new_post', [''])[0]
+      if is_login(environ):
+         new_post = options.get('new_post', [''])[0]
 
-      # Always escape user input to avoid script injection
-      new_post = escape(new_post)
+         # Always escape user input to avoid script injection
+         new_post = escape(new_post)
 
-      add_post(new_post)
-      return [('Location', URL + "/index.html")]
+         add_post(new_post)
+         return [('Location', URL + "/index.html")]
+      else:
+         return [('Location', URL + "/login.html")]
 
    #TODO redirect to success or failure
    elif action == "/login":
