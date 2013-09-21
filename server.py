@@ -3,6 +3,7 @@
 from wsgiref.simple_server import make_server
 from cgi import parse_qs, escape
 from mimetypes import guess_type
+from urlparse import urlparse
 import Cookie
 
 #Go ahead and open the templates, we're bound to need them
@@ -12,7 +13,9 @@ templates = {"404" : open("templates/404.html").read(),
              "login" : open("templates/login.html").read(),
              "login_link" : open("templates/login_link.html").read()}
 
+#To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
 URL = "http://localhost:8051"
+parsed_URL = urlparse(URL)
  
 #This will be in the database
 posts = []
@@ -27,7 +30,6 @@ def is_login(environ):
 
    except KeyError:
       return False
-
 
 #these methods will hit the database 
 def add_post(post):
@@ -52,7 +54,9 @@ def handle_POST(action, environ, options):
    #TODO redirect to success or failure
    elif action == "/login":
       #TODO get this from database
-      return [('Location', URL + "/index.html"), ("Set-Cookie", "USERID=123456"), ("Set-Cookie", "PASSHASH=abc123")]
+      return [('Location', URL + "/index.html"),
+              ("Set-Cookie", "USERID=123456"),
+              ("Set-Cookie", "PASSHASH=abc123")]
       
    else:
       return [('Location', URL + action)]
@@ -63,7 +67,8 @@ def compose_page(environ):
    page_name = environ["PATH_INFO"]
    #Compose any known page
    if page_name == "/index.html" or page_name == "/" or page_name == "":
-      page = templates["index"].format(posts = compose_posts() or 'None', login_link=is_login(environ) or templates["login_link"])
+      page = templates["index"].format(posts = compose_posts() or 'None',
+                                       login_link=is_login(environ) or templates["login_link"])
 
    elif page_name == "/login.html":
       page = templates["login"]
@@ -116,5 +121,5 @@ def application(environ, start_response):
 
    return [response_body]
 
-httpd = make_server('localhost', 8051, application)
+httpd = make_server(parsed_URL.hostname, parsed_URL.port, application)
 httpd.serve_forever()
