@@ -15,7 +15,7 @@ templates = {"404" : open("templates/404.html").read(),
 
 #To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
 URL = "http://localhost:8051"
-parsed_URL = urlparse(URL)
+parsed_MAIN_URL = urlparse(URL)
  
 #This will be in the database
 posts = []
@@ -52,7 +52,7 @@ def handle_POST(action, environ, options):
          add_post(new_post)
          return [('Location', URL + "/index.html")]
       else:
-         return [('Location', URL + "/login.html")]
+         return [('Location', URL + "/login.html?prompt=restricted")]
 
    #TODO redirect to success or failure
    elif action == "/login":
@@ -68,13 +68,15 @@ def handle_POST(action, environ, options):
 def compose_page(environ):
    page = ""
    page_name = environ["PATH_INFO"]
+   qs = parse_qs(environ["QUERY_STRING"])
+   
    #Compose any known page
    if page_name == "/index.html" or page_name == "/" or page_name == "":
       page = templates["index"].format(posts = compose_posts() or 'None',
                                        login_link=is_login(environ) or templates["login_link"])
 
    elif page_name == "/login.html":
-      page = templates["login"]
+      page = templates["login"].format(prompt="You must login to complete this action" if qs.get("prompt", None) == ["restricted"] else "")
 
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
@@ -124,5 +126,5 @@ def application(environ, start_response):
 
    return [response_body]
 
-httpd = make_server(parsed_URL.hostname, parsed_URL.port, application)
+httpd = make_server(parsed_MAIN_URL.hostname, parsed_MAIN_URL.port, application)
 httpd.serve_forever()
