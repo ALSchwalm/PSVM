@@ -19,8 +19,7 @@ templates = {"404" : open("templates/404.html").read(),
              "index" : open("index.html").read(),
              "post" : open("templates/post.html").read(),
              "login" : open("templates/login.html").read(),
-             "login_link" : open("templates/login_link.html").read(),
-             "nice_try" : open("templates/nice_try.html").read()}
+             "login_link" : open("templates/login_link.html").read()}
 
 #To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
 URL = "http://localhost:8051"
@@ -76,7 +75,7 @@ def handle_POST(environ, options):
       password = options.get("password", [""])[0]
       
       if username[0] in ('"', "'") or password[0] in ('"', "'"):
-        return [('Location', URL + "/nice_try.html")]
+        return [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")]
       
       q = database.execute("SELECT user_id, pass_hash FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
       result = q.fetchone()
