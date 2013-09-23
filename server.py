@@ -19,7 +19,8 @@ templates = {"404" : open("templates/404.html").read(),
              "index" : open("index.html").read(),
              "post" : open("templates/post.html").read(),
              "login" : open("templates/login.html").read(),
-             "login_link" : open("templates/login_link.html").read()}
+             "login_link" : open("templates/login_link.html").read(),
+             "nice_try" : open("templates/nice_try.html").read()}
 
 #To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
 URL = "http://localhost:8051"
@@ -74,12 +75,15 @@ def handle_POST(environ, options):
       username = options.get("username", [""])[0]
       password = options.get("password", [""])[0]
       
+      if username[0] in ('"', "'") or password[0] in ('"', "'"):
+        return [('Location', URL + "/nice_try.html")]
+      
       q = database.execute("SELECT user_id, pass_hash FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
       result = q.fetchone()
       
       if not result or not username or not password:
         return [('Location', URL + "/login.html?prompt=failed")]
-      
+        
       #TODO get this from database
       return [('Location', URL + "/index.html"),
               ("Set-Cookie", "USERID="+str(result["user_id"])),
@@ -108,6 +112,9 @@ def compose_page(environ):
    
       page = templates["login"].format(prompt=prompts[qs.get("prompt", [None])[0]])
 
+   elif page_name == "/nice_try.html":
+     page = templates["nice_try"]
+     
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
    else:
