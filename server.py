@@ -6,6 +6,7 @@ from mimetypes import guess_type
 from urlparse import urlparse
 from hashlib import sha512
 from Cookie import SimpleCookie
+from collections import defaultdict
 import sqlite3
 
 
@@ -100,11 +101,10 @@ def compose_page(environ):
       
 
    elif page_name == "/login.html":
-      prompts = { 
-        None : "",
+      prompts = defaultdict(str, { 
         "restricted" : "You must login to complete this action</br>",
         "failed" : "Invalid username or password</br>"
-      }
+      })
    
       page = templates["login"].format(prompt=prompts[qs.get("prompt", [None])[0]])
 
