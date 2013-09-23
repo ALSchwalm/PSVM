@@ -4,7 +4,14 @@ from wsgiref.simple_server import make_server
 from cgi import parse_qs, escape
 from mimetypes import guess_type
 from urlparse import urlparse
-import Cookie
+from hashlib import sha512
+from Cookie import SimpleCookie
+import sqlite3
+
+
+conn = sqlite3.connect('example.db')
+conn.row_factory = sqlite3.Row
+database = conn.cursor()
 
 #Go ahead and open the templates, we're bound to need them
 templates = {"404" : open("templates/404.html").read(),
@@ -17,19 +24,25 @@ templates = {"404" : open("templates/404.html").read(),
 URL = "http://localhost:8051"
 parsed_MAIN_URL = urlparse(URL)
  
-#This will be in the database
-posts = []
-
 def is_login(environ):
    try:
-      c = Cookie.SimpleCookie(environ.get("HTTP_COOKIE",""))
+      c = SimpleCookie(environ.get("HTTP_COOKIE",""))
       user_id = c["USERID"].value
       password_hash = c["PASSHASH"].value
-      #TODO Check these are actually correct
-      return user_id
+
+      user = database.execute("SELECT * FROM users WHERE user_id = ?", (user_id,)).fetchone()
+      
+      if not user or user['pass_hash'] != password_hash:
+         return False
+  
+      return (user_id, user["username"])
 
    except KeyError:
       return False
+
+  
+#This will be in the database
+posts = []
 
 #these methods will hit the database 
 def add_post(post):
@@ -41,10 +54,11 @@ def compose_posts():
    post_template = templates["post"]
    return "".join([post_template.format(content=body) for body in posts])
 
-def handle_POST(action, environ, options):
+def handle_POST(environ, options):
+   action = environ["PATH_INFO"]
    if action == "/new_post":
       if is_login(environ):
-         new_post = options.get('new_post', [''])[0]
+         new_post = options.get("new_post", [""])[0]
 
          # Always escape user input to avoid script injection
          new_post = escape(new_post)
@@ -56,10 +70,19 @@ def handle_POST(action, environ, options):
 
    #TODO redirect to success or failure
    elif action == "/login":
+      username = options.get("username", [""])[0]
+      password = options.get("password", [""])[0]
+      
+      q = database.execute("SELECT user_id, pass_hash FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
+      result = q.fetchone()
+      
+      if not result or not username or not password:
+        return [('Location', URL + "/login.html?prompt=failed")]
+      
       #TODO get this from database
       return [('Location', URL + "/index.html"),
-              ("Set-Cookie", "USERID=123456"),
-              ("Set-Cookie", "PASSHASH=abc123")]
+              ("Set-Cookie", "USERID="+str(result["user_id"])),
+              ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))]
       
    else:
       return [('Location', URL + action)]
@@ -73,10 +96,17 @@ def compose_page(environ):
    #Compose any known page
    if page_name == "/index.html" or page_name == "/" or page_name == "":
       page = templates["index"].format(posts = compose_posts() or 'None',
-                                       login_link=is_login(environ) or templates["login_link"])
+                                       login_link=templates["login_link"] if not is_login(environ) else is_login(environ)[1])
+      
 
    elif page_name == "/login.html":
-      page = templates["login"].format(prompt="You must login to complete this action" if qs.get("prompt", None) == ["restricted"] else "")
+      prompts = { 
+        None : "",
+        "restricted" : "You must login to complete this action</br>",
+        "failed" : "Invalid username or password</br>"
+      }
+   
+      page = templates["login"].format(prompt=prompts[qs.get("prompt", [None])[0]])
 
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
@@ -98,7 +128,7 @@ def application(environ, start_response):
    if environ["REQUEST_METHOD"] == "POST":
       request_body = environ['wsgi.input'].read(request_body_size)
       d = parse_qs(request_body)
-      post_header  = handle_POST(path, environ,  d)
+      post_header  = handle_POST(environ,  d)
 
    try:
       response_body = compose_page(environ)
