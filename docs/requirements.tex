@@ -1,0 +1,184 @@
+\documentclass[12pt]{scrartcl}
+\begin{document}
+
+\title{Public Static Void Main}
+\subtitle{Requirements Document, version 1}
+\author{Adam, Eli, Andrew, Betrand, Martin}
+
+\maketitle
+
+\newpage\null\thispagestyle{empty}\newpage
+
+\tableofcontents
+
+\newpage\null\thispagestyle{empty}\newpage
+
+\section{Introduction}
+
+ 
+
+\subsection{Purpose}
+\subsection{Definitions}
+\subsection{References}
+
+\section{System Overview}
+\subsection{Purpose}
+\subsection{Use Case Diagram}
+
+\section{Specific Requirements}
+\subsection{Create Account}
+\subsubsection{Description}
+
+The user is required to be logged-in to perform various actions (make posts, edit profile, etc.).
+In order to detect valid users, user account creation is required. 
+
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item The user clicks the ``Register'' link at the top of the main page
+\item User is prompted for a username and password (twice for verification)
+\item A new account is created for the user in the database
+\item The user is redirected to the main page and logged-in
+\end{enumerate}
+
+\subsection{Edit Posts}
+\subsubsection{Description}
+
+User changes the text of a comment or post they created within the forum
+
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item User starts at the thread page he commented on.
+\item Page displays ‘edit’ button alongside posts this user made
+\item User clicks on ‘edit’
+\item Application opens the text editor, with the text of his post inside it.
+\item User can change the text
+\item User hits submit
+\item  Application saves the changes, modifying the saved post
+\end{enumerate}
+
+\subsection{PM Other Users}
+\subsubsection{Description}
+
+Most forums have a feature allowing users to message eachother through the site. This
+feature allows such behavior.
+
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+\begin{enumerate}
+\item User selects the ``PM'' button from the main page or their user page.
+\item The User types the username of the user to receive the message
+\item User presses the ``Send'' button.
+\end{enumerate}
+
+\subsection{Browse Other Posts}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Search Forum}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{`Like` Posts}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Ban Users}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Upload User Images}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Custom User Signatures}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Delete Posts}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Quote Post}
+\subsubsection{Description}
+
+The user can select a previous post to quote in their post. When quoting a post, the quote is contained in unique html to distinguish from the standard post. 
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item The user clicks a button under a post called Quote
+\item The quote then appears in the post box for the user to add more content
+\item When the post is submitted, the quote displays in the post with the special quote html
+\end{enumerate}
+
+\subsection{Create Thread}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Lock Thread}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Tag Threads}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+
+\subsection{Report Users}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Embed HTML}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Edit Profile}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{Move Threads}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+\subsection{}
+\subsubsection{Description}
+\subsubsection{Actors}
+\subsubsection{Steps}
+
+
+
+
+
+
+\end{document}
+
