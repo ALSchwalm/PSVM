@@ -37,7 +37,7 @@ PSVM (Public Static Void Main) is a programming centric forum. Like most forums,
 \includegraphics{use-case.PNG}
 
 \section{Specific Requirements}
-\subsection{Create Account}
+\subsection{Create Account (Required)}
 \subsubsection{Description}
 
 The user is required to be logged-in to perform various actions (make posts, edit profile, etc.).
@@ -56,7 +56,7 @@ Users
 \item The user is redirected to the main page and logged-in
 \end{enumerate}
 
-\subsection{Edit Posts}
+\subsection{Edit Posts (Required)}
 \subsubsection{Description}
 
 User changes the text of a comment or post they created within the forum
@@ -77,7 +77,7 @@ Users
 \item  Application saves the changes, modifying the saved post
 \end{enumerate}
 
-\subsection{PM Other Users}
+\subsection{PM Other Users (Medium)}
 \subsubsection{Description}
 
 Most forums have a feature allowing users to message eachother through the site. This
@@ -94,7 +94,7 @@ Users
 \item User presses the ``Send'' button.
 \end{enumerate}
 
-\subsection{Quote Post}
+\subsection{Quote Post (Required)}
 \subsubsection{Description}
 
 The user can select a previous post to quote in their post. When quoting a post, the quote is contained in unique html to distinguish from the standard post. 
@@ -111,7 +111,7 @@ Users
 \end{enumerate}
 
 
-\subsection{Ban Users}
+\subsection{Ban Users (Requried)}
 \subsubsection{Description}
  
 Admin removes a user’s access to the forum
@@ -133,7 +133,7 @@ Admin
 
 \end {enumerate}
 
-\subsection{Create Thread}
+\subsection{Create Thread (Requried)}
 \subsubsection{Description}
 
 The user can create a new thread. The thread is a user title collection of posts that any user can post to. The original user has the first post in the thread.
@@ -152,7 +152,7 @@ Users
 \item The thread is posted under the proper heading
 \end{enumerate}
 
-\subsection{Custom User Signatures}
+\subsection{Custom User Signatures (Medium)}
 \subsubsection{Description}
 
 Each user can customize a personal signature that will be placed below each post they make. This signature can be constructed from plain text.
@@ -173,7 +173,7 @@ Users
 \item The signature appears under every post the user makes to any thread.
 \end{enumerate}
 
-\subsection{Delete Posts}
+\subsection{Delete Posts (Required)}
 \subsubsection{Description}
 
 Each user can navigate to any post they have made in any thread and permanently delete the post.
@@ -195,7 +195,7 @@ Users
 
 
 
-\subsection{Report Users}
+\subsection{Report Users (Requried)}
 \subsubsection{Description}
 
 Each user can navigate to the offending user’s profile page and select “Report User”. The user then enters a reason for reporting the offending user (breaking rules, threats, etc.), and confirms the report user request.
@@ -214,6 +214,114 @@ Users
 \item The user confirms the request.
 \item The post is deleted, and the thread pulls the posts below it up to fill the gap.
 \end{enumerate}
+
+
+\subsection{Change Password (Required)}
+\subsubsection{Description}
+
+The user may change their password from their user profile page by selecting “change password.” The user will be required to enter their original password as well as the new password.
+
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item The user clicks the button to navigate to to their profile page
+\item The user clicks the “change password” button to navigate to the change password page
+\item The user enters their current password
+\item The user enters their new password
+\item The user selects the “change password” button to confirm the password change
+\end{enumerate}
+
+\subsection{View User Profile (Required)}
+\subsubsection{Description}
+
+The user may view another user’s profile page by selecting the “view profile” button next to a post the user has made
+
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item The user clicks the “view profile” button next to a post made by the user whose profile they wish to view
+\item The user is navigated to the selected user’s profile page
+\end{enumerate}
+
+\subsection{Browse Posts (Required)}
+\subsubsection{Description}
+Each of the subforum pages has a listing of the posts and threads made within that subforum. Users can view the list, which contains
+information about each post, such as the number of “likes” it has received, or the number of comments upon it.
+
+\subsection{Search Subforum (Requried)}
+\subsubsection{Description}
+The user can initiate a search within a subforum, at which point the application returns a list of the posts with relevant titles and tags.
+
+\subsection{“Like” Posts (Medium)}
+\subsubsection{Description}
+Within a post’s thread, a button is located next to or below the post’s content. Pressing this button adds a “like” to the post’s count, which is used to
+determine which posts show up on the front page of the forum, as well as being a general gauge of the content’s popularity.
+
+\subsection{Upload User Image (Medium)}
+\subsubsection{Description}
+
+Users can upload an image to their profile which will be displayed next to their posts, or by PMs they send to other users.
+
+\subsection{Tag Threads (Medium)}
+\subsubsection{Description}
+
+Threads may be ``tagged'' with labels indicating their content. This can help identify the keywords for the search engine, or other interested users.
+
+\subsection{Embeded HTML (Medium)}
+\subsubsection{Description}
+
+It can sometimes be useful to embed limited HTML in a post (i.e., for hotlinking images or embeding youtube videos).
+
+\subsection{Pin Thread (Required)}
+\subsubsection{Description}
+Admins can pin a thread to the top of a category. This post will always appear at top of the page.
+This function will be used by admin if the post is important and needs to be seen by all users.
+
+\subsection{Edit Signature (Medium)}
+\subsubsection{Description}
+Allows the user to change their signature, a line that appears under any comment they make. By default, there is no signature.
+
+\subsection{Edit Description (Requried)}
+\subsubsection{Description}
+Allows the user to change the description within their profile.
+The description field is used to share information about themselves, their posting habits, or their coding abilities/expertise.
+
+\subsection{Move Thread (Required)}
+\subsubsection{Description}
+Admins can move a thread to a different category.
+If the thread posted by a user is better fitted for another category the admins can move the thread into the better category. 
+
+\subsection{Ban Users (Required)}
+\subsubsection{Description}
+ 
+Admin removes a user’s access to the forum
+
+\subsection{Lock Thread (Required)}
+\subsubsection{Description}
+Admins can lock a thread, so no more posts can be made to the thread. Threads can be lock only by Admins.
+If a thread is going off-topic or against the rules of the site, the thread can be closed 
+
+
+\subsection{Edit Profile (Required)}
+\subsubsection{Description}
+The user can edit elements of their profile by clicking edit profile when viewing their own profile page.
+
+\subsection{Create Category (Medium)}
+\subsubsection{Description}
+Categories are sections of the forum containing threads that are alike.
+This allows admins to create a new category on the site. Categories contain a title and a brief description of what to post in the category.
+
+
+
+
 
 
 \subsection{Appendix A: User Interface}
