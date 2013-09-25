@@ -102,7 +102,6 @@ def compose_page(environ):
       page = templates["index"].format(posts = compose_posts() or 'None',
                                        login_link=templates["login_link"] if not is_login(environ) else is_login(environ)[1])
       
-
    elif page_name == "/login.html":
       prompts = defaultdict(str, { 
         "restricted" : "You must login to complete this action</br>",
@@ -110,9 +109,6 @@ def compose_page(environ):
       })
    
       page = templates["login"].format(prompt=prompts[qs.get("prompt", [None])[0]])
-
-   elif page_name == "/nice_try.html":
-     page = templates["nice_try"]
      
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
