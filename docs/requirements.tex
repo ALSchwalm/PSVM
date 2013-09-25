@@ -14,15 +14,26 @@
 \newpage\null\thispagestyle{empty}\newpage
 
 \section{Introduction}
-
- 
-
 \subsection{Purpose}
-\subsection{Definitions}
-\subsection{References}
-
+The purpose of this Requirements Document is to specify the software requirements of the Public Static Void Main project, a programming forum that will allow users to create posts and images, as well as maintain user profiles. The document will help to define the concept and functionality of Public Static Void Main.
+ 
+The intended audience of this document is the software developers, Mr. Bandi, and Mr. Anderson.
+ 
+\subsection{Definitions, Acronyms, and Abbreviations}
+\begin{description}
+\item [PSVM]          	Acronym for “Public Static Void Main”
+\item [User]            The standard visitor to PSVM. Can create/edit posts and maintain a user profile
+\item [User Profile] 	A page specific to one user. Contains information about the user, their avatar, etc.
+\item [Admin]         	A special class of user. Can delete posts and ban users
+\item [Post]            A piece of original content, such as the beginning of a discussion, or an image
+\item [Comment]			A comment upon a post
+\item [Thread]			A page containing a post and all of its comments
+\end{description}
 \section{System Overview}
 \subsection{Purpose}
+
+PSVM (Public Static Void Main) is a programming centric forum. Like most forums, the user will be able to create threads and posts as well as search the forum. Users will have profiles which will allow them to set signatures and change user settings.  The users will be able to message other users using a built-in “private messaging” feature. Administrators will be able to lock and delete threads as well as ban users.
+
 \subsection{Use Case Diagram}
 
 \section{Specific Requirements}
@@ -70,7 +81,7 @@ Users
 \subsubsection{Description}
 
 Most forums have a feature allowing users to message eachother through the site. This
-feature allows such behavior.
+feature allows such behaviour.
 
 \subsubsection{Actors}
 
@@ -82,41 +93,6 @@ Users
 \item The User types the username of the user to receive the message
 \item User presses the ``Send'' button.
 \end{enumerate}
-
-\subsection{Browse Other Posts}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{Search Forum}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{`Like` Posts}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{Ban Users}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{Upload User Images}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{Custom User Signatures}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{Delete Posts}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
 
 \subsection{Quote Post}
 \subsubsection{Description}
@@ -134,49 +110,110 @@ Users
 \item When the post is submitted, the quote displays in the post with the special quote html
 \end{enumerate}
 
+
+\subsection{Ban Users}
+\subsubsection{Description}
+ 
+Admin removes a user’s access to the forum
+ 
+\subsubsection{Actors}
+ 
+Admin
+ 
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item Admin begins on the profile page of the user he intends to ban
+\item Application displays a list of commands at the top of the page, among which is ‘ban’
+\item Admin selects the ban command
+\item Application prompts to confirm the ban request
+\item Admin confirms
+\item Application removes the user from the user list, adds the username to a blacklist
+\item Application displays a confirmation of the user’s removal
+
+\end {enumerate}
+
 \subsection{Create Thread}
 \subsubsection{Description}
+
+The user can create a new thread. The thread is a user title collection of posts that any user can post to. The original user has the first post in the thread.
+
 \subsubsection{Actors}
+
+Users
+
 \subsubsection{Steps}
 
-\subsection{Lock Thread}
+\begin{enumerate}
+\item The user clicks a button called Create Post 
+\item The user enters the title of the new thread and the location of where to post the thread
+\item The user enters the first post for the thread
+\item The user presses the submit thread button
+\item The thread is posted under the proper heading
+\end{enumerate}
+
+\subsection{Custom User Signatures}
 \subsubsection{Description}
+
+Each user can customize a personal signature that will be placed below each post they make. This signature can be constructed from plain text.
+
 \subsubsection{Actors}
+
+Users
+
 \subsubsection{Steps}
 
-\subsection{Tag Threads}
+\begin{enumerate}
+\item The user clicks the link to go to their profile.
+\item The user clicks the link to edit their profile.
+\item The user clicks the link to edit their signature.
+\item The user enters their desired signature in the text box provided.
+\item The user clicks the button to save their signature.
+\item The page redirects to the users profile page.
+\item The signature appears under every post the user makes to any thread.
+\end{enumerate}
+
+\subsection{Delete Posts}
 \subsubsection{Description}
+
+Each user can navigate to any post they have made in any thread and permanently delete the post.
+
 \subsubsection{Actors}
+
+Users
+
 \subsubsection{Steps}
+
+\begin{enumerate}
+\item The user finds the thread containing the post they want to delete.
+\item The user scrolls to the post that they want to delete.
+\item The user clicks the link to delete the post.
+\item The page asks the user to confirm the delete request.
+\item The user confirms the request.
+\item The post is deleted, and the thread pulls the posts below it up to fill the gap.
+\end{enumerate}
+
 
 
 \subsection{Report Users}
 \subsubsection{Description}
+
+Each user can navigate to the offending user’s profile page and select “Report User”. The user then enters a reason for reporting the offending user (breaking rules, threats, etc.), and confirms the report user request.
+
 \subsubsection{Actors}
+
+Users
+
 \subsubsection{Steps}
 
-\subsection{Embed HTML}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{Edit Profile}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{Move Threads}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-\subsection{}
-\subsubsection{Description}
-\subsubsection{Actors}
-\subsubsection{Steps}
-
-
-
+\begin{enumerate}
+\item The user navigates to the offending user’s profile page.
+\item The user selects the “Report User” option from a list of options.
+\item The page prompts the user to enter a reason for reporting the offending user.
+\item The page asks the user to confirm the request.
+\item The user confirms the request.
+\item The post is deleted, and the thread pulls the posts below it up to fill the gap.
+\end{enumerate}
 
 
 
