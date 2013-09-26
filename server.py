@@ -22,7 +22,7 @@ templates = {"404" : open("templates/404.html").read(),
              "login_link" : open("templates/login_link.html").read()}
 
 #To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
-URL = "http://localhost:8051"
+URL = "http://localhost:8051" #pluto.cse.msstate.edu:10062
 parsed_MAIN_URL = urlparse(URL)
  
 def is_login(environ):
@@ -74,7 +74,7 @@ def handle_POST(environ, options):
       username = options.get("username", [""])[0]
       password = options.get("password", [""])[0]
       
-      if username[0] in ('"', "'") or password[0] in ('"', "'"):
+      if username and (username[0] in ('"', "'") or password[0] in ('"', "'")):
         return [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")]
       
       q = database.execute("SELECT user_id, pass_hash FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
