@@ -7,6 +7,7 @@ from urlparse import urlparse
 from hashlib import sha512
 from Cookie import SimpleCookie
 from collections import defaultdict
+from markup import parse_markup
 import sqlite3
 
 
@@ -58,7 +59,7 @@ def handle_POST(environ, options):
          new_post = options.get("new_post", [""])[0]
 
          # Always escape user input to avoid script injection
-         new_post = escape(new_post)
+         new_post = parse_markup(escape(new_post))
 
          add_post(user, new_post)
          return [('Location', URL + "/index.html")]
