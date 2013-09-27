@@ -10,7 +10,7 @@ from collections import defaultdict
 import sqlite3
 
 
-conn = sqlite3.connect('example.db')
+conn = sqlite3.connect('example.db', isolation_level=None)
 conn.row_factory = sqlite3.Row
 database = conn.cursor()
 
@@ -42,30 +42,25 @@ def is_login(environ):
    except KeyError:
       return False
 
-  
-#This will be in the database
-posts = []
-
-#these methods will hit the database 
-def add_post(post):
-   global posts
-   posts.append(post)
+def add_post(user_id, post):
+   database.execute("INSERT INTO comments VALUES(NULL, ?, ?)", (user_id[0], post))
 
 def compose_posts():
-   global posts
-   post_template = templates["post"]
-   return "".join([post_template.format(content=body) for body in posts])
+   posts = database.execute("SELECT users.username, comments.body FROM users, comments WHERE comments.user_id = users.user_id").fetchall()
+   return "".join([templates["post"].format(username=post['username'],
+                                            content=post['body']) for post in posts])
 
 def handle_POST(environ, options):
    action = environ["PATH_INFO"]
    if action == "/new_post":
-      if is_login(environ):
+      user = is_login(environ)
+      if user:
          new_post = options.get("new_post", [""])[0]
 
          # Always escape user input to avoid script injection
          new_post = escape(new_post)
 
-         add_post(new_post)
+         add_post(user, new_post)
          return [('Location', URL + "/index.html")]
       else:
          return [('Location', URL + "/login.html?prompt=restricted")]
@@ -105,7 +100,6 @@ def handle_POST(environ, options):
             return [('Location', URL + "/register.html?prompt=duplicate")]
          else:
             database.execute("INSERT INTO users VALUES (NULL, ?, ?)", (username, sha512(password).hexdigest()))
-            conn.commit()
             
             #TODO check that this acutally worked
             #TODO add javascript to redirect to login if successful
@@ -145,8 +139,11 @@ def compose_page(environ):
       
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
-   else:
+   elif page_name.split(".")[-1] in ("js", "html", "css", "png", "jpg", "gif"):
       page = open(page_name[1:]).read()
+      
+   else:
+      raise IOError
 
    return page
 

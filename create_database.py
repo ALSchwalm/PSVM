@@ -7,11 +7,20 @@ c = conn.cursor()
 c.executescript('''
 
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS comments;
 
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY, 
     username TEXT, 
-    pass_hash TEXT)
+    pass_hash TEXT
+);
+
+CREATE TABLE comments (
+    comment_id INTEGER PRIMARY KEY,
+    user_id INTEGER,
+    body TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
     ''')
     
 user = ('user', hashlib.sha512("password").hexdigest())
