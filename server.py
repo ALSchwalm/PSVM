@@ -59,6 +59,7 @@ def handle_POST(environ, options):
          new_post = options.get("new_post", [""])[0]
 
          # Always escape user input to avoid script injection
+         #TODO store the unmodified version to allow edits
          new_post = parse_markup(escape(new_post))
 
          add_post(user, new_post)
