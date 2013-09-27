@@ -19,7 +19,8 @@ templates = {"404" : open("templates/404.html").read(),
              "index" : open("index.html").read(),
              "post" : open("templates/post.html").read(),
              "login" : open("templates/login.html").read(),
-             "login_link" : open("templates/login_link.html").read()}
+             "login_link" : open("templates/login_link.html").read(),
+             "register" : open("templates/register.html").read()}
 
 #To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
 URL = "http://localhost:8051" #pluto.cse.msstate.edu:10062
@@ -83,11 +84,32 @@ def handle_POST(environ, options):
       if not result or not username or not password:
         return [('Location', URL + "/login.html?prompt=failed")]
         
-      #TODO get this from database
       return [('Location', URL + "/index.html"),
               ("Set-Cookie", "USERID="+str(result["user_id"])),
               ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))]
+
+   elif action == "/register":
+      username = options.get("username", [""])[0]
+      password = options.get("password", [""])[0]
+      password_verify = options.get("password", ["", ""])[1]
       
+      if password != password_verify:
+         return [('Location', URL + "/register.html?prompt=mismatch")]
+      elif not username or not password:
+         return [('Location', URL + "/register.html?prompt=blank")]
+      elif len(username) < 5 or len(password) < 6:
+         return [('Location', URL + "/register.html?prompt=length")]
+      else:
+         q = database.execute("SELECT user_id FROM users WHERE username = ?", (username,)).fetchone()
+         if q:
+            return [('Location', URL + "/register.html?prompt=duplicate")]
+         else:
+            database.execute("INSERT INTO users VALUES (NULL, ?, ?)", (username, sha512(password).hexdigest()))
+            conn.commit()
+            
+            #TODO check that this acutally worked
+            #TODO add javascript to redirect to login if successful
+            return [('Location', URL + "/register.html?prompt=success")]
    else:
       return [('Location', URL + action)]
    
@@ -109,7 +131,18 @@ def compose_page(environ):
       })
    
       page = templates["login"].format(prompt=prompts[qs.get("prompt", [None])[0]])
-     
+
+   elif page_name == "/register.html":
+      prompts = defaultdict(str, { 
+         "success" : "Registration successful</br>",
+         "blank" : "Username and password must be non-empty</br>",
+         "mismatch" : "Password and verification must match</br>",
+         "duplicate" : "User already registered</br>",
+         "length" : "Username must be more than 5 characters, password must be more than 6</br>"
+      })
+      
+      page = templates["register"].format(prompt=prompts[qs.get("prompt", [None])[0]])
+      
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
    else:
