@@ -41,3 +41,9 @@ body {
     clear: both;
 }
 
+.asLink {
+    background-color: transparent;
+    text-decoration: underline;
+    border: none;
+    cursor: pointer;
+}

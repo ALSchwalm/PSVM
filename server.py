@@ -21,6 +21,7 @@ templates = {"404" : open("templates/404.html").read(),
              "post" : open("templates/post.html").read(),
              "login" : open("templates/login.html").read(),
              "login_link" : open("templates/login_link.html").read(),
+             "logout_link" : open("templates/logout_link.html").read(),
              "register" : open("templates/register.html").read()}
 
 #To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
@@ -85,6 +86,11 @@ def handle_POST(environ, options):
               ("Set-Cookie", "USERID="+str(result["user_id"])),
               ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))]
 
+   elif action == "/logout":
+      return [('Location', URL + "/index.html"),
+              ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
+              ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")]
+      
    elif action == "/register":
       username = options.get("username", [""])[0]
       password = options.get("password", [""])[0]
@@ -118,7 +124,8 @@ def compose_page(environ):
    #Compose any known page
    if page_name == "/index.html" or page_name == "/" or page_name == "":
       page = templates["index"].format(posts = compose_posts() or 'None',
-                                       login_link=templates["login_link"] if not is_login(environ) else is_login(environ)[1])
+                                       login_link=templates["login_link"] if not is_login(environ) 
+                                       else templates["logout_link"].format(username=is_login(environ)[1]))
       
    elif page_name == "/login.html":
       prompts = defaultdict(str, { 
