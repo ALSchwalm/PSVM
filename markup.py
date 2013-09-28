@@ -9,5 +9,9 @@ def parse_markup(comment_body):
                               comment_body,
                               flags=re.MULTILINE | re.DOTALL)
                               
+    comment_body = re.sub(r"\[link\]\((.*?)\)(.*?)\[\\link\]", 
+                          r'<a href=\1>\2</a>', 
+                          comment_body,
+                          flags=re.MULTILINE | re.DOTALL)
     comment_body = re.sub(r"\n", "</br>", comment_body)
     return comment_body
