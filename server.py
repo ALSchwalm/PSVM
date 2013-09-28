@@ -20,11 +20,12 @@ frame = open("templates/frame.html").read()
 
 templates = {"404" : frame.format(content=open("templates/404.html").read()),
              "index" : frame.format(content=open("index.html").read()),
-             "post" : frame.format(content=open("templates/post.html").read()),
              "login" : frame.format(content=open("templates/login.html").read()),
-             "login_link" : frame.format(content=open("templates/login_link.html").read()),
-             "logout_link" : frame.format(content=open("templates/logout_link.html").read()),
-             "register" : frame.format(content=open("templates/register.html").read())}
+             "register" : frame.format(content=open("templates/register.html").read()),
+             "login_link" : open("templates/login_link.html").read(),
+             "logout_link" : open("templates/logout_link.html").read(),
+             "post" : open("templates/post.html").read()}
+
 
 #To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
 URL = "http://localhost:8051" #pluto.cse.msstate.edu:10062
