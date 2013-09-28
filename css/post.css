@@ -2,12 +2,13 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
 body {
-	padding:35px;
-	font:15px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-	color:#222;
-	font-weight:300;
-	width:840px;
-	margin:0 auto;
+    padding:20px;
+    font:15px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color:#222;
+    font-weight:300;
+    width:800px;
+    margin:0 auto;
+    line-height: 1.2em;
 }
 
 .post {
@@ -38,10 +39,5 @@ body {
 
 .clear {
     clear: both;
-}
-
-.p {
-    -webkit-margin-before: 0em;
-    -webkit-margin-after: 0em;
 }
 
