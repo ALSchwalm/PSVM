@@ -11,20 +11,22 @@ DROP TABLE IF EXISTS comments;
 
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY, 
-    username TEXT COLLATE NOCASE, 
-    pass_hash TEXT
+    username TEXT NOT NULL COLLATE NOCASE, 
+    pass_hash TEXT NOT NULL,
+    email TEXT NOT NULL,
+    verified INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE TABLE comments (
     comment_id INTEGER PRIMARY KEY,
-    user_id INTEGER,
+    user_id INTEGER NOT NULL,
     body TEXT,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
     ''')
     
-user = ('user', hashlib.sha512("password").hexdigest())
-c.execute('''INSERT INTO users VALUES(NULL, ?, ?)''', user)
+user = ('user', hashlib.sha512("password").hexdigest(), "invalid@gmail.com", True)
+c.execute('''INSERT INTO users VALUES(NULL, ?, ?, ?, ?)''', user)
 
 
 # Save (commit) the changes

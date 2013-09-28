@@ -3,13 +3,14 @@
 from wsgiref.simple_server import make_server
 from cgi import parse_qs, escape
 from mimetypes import guess_type
-from urlparse import urlparse
 from hashlib import sha512
 from Cookie import SimpleCookie
 from collections import defaultdict
 from markup import parse_markup
-import sqlite3
+from settings import *
 
+import mail
+import sqlite3
 
 conn = sqlite3.connect('example.db', isolation_level=None)
 conn.row_factory = sqlite3.Row
@@ -28,11 +29,6 @@ templates = {#open page templates
              "login_link" : open("templates/login_link.html").read(),
              "logout_link" : open("templates/logout_link.html").read(),
              "post" : open("templates/post.html").read()}
-
-
-#To fix slow load times on windows with localhost see http://stackoverflow.com/a/1813778
-URL = "http://localhost:8051" #pluto.cse.msstate.edu:10062
-parsed_MAIN_URL = urlparse(URL)
  
 def is_login(environ):
    try:
@@ -82,11 +78,13 @@ def handle_POST(environ, options):
       if username and (username[0] in ('"', "'") or password[0] in ('"', "'")):
         return [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")]
       
-      q = database.execute("SELECT user_id, pass_hash FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
+      q = database.execute("SELECT user_id, pass_hash, verified FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
       result = q.fetchone()
       
       if not result or not username or not password:
         return [('Location', URL + "/login.html?prompt=failed")]
+      elif result["verified"] != True:
+        return [('Location', URL + "/login.html?prompt=unverified")]
         
       return [('Location', URL + "/index.html"),
               ("Set-Cookie", "USERID="+str(result["user_id"])),
@@ -101,6 +99,7 @@ def handle_POST(environ, options):
       username = options.get("username", [""])[0]
       password = options.get("password", [""])[0]
       password_verify = options.get("password", ["", ""])[1]
+      email = options.get("email", [""])[0]
       
       if password != password_verify:
          return [('Location', URL + "/register.html?prompt=mismatch")]
@@ -108,12 +107,17 @@ def handle_POST(environ, options):
          return [('Location', URL + "/register.html?prompt=blank")]
       elif len(username) < 5 or len(password) < 6:
          return [('Location', URL + "/register.html?prompt=length")]
+      elif not mail.validate_email(email):
+         return [('Location', URL + "/register.html?prompt=email")]
       else:
          q = database.execute("SELECT user_id FROM users WHERE username = ?", (username,)).fetchone()
          if q:
             return [('Location', URL + "/register.html?prompt=duplicate")]
          else:
-            database.execute("INSERT INTO users VALUES (NULL, ?, ?)", (username, sha512(password).hexdigest()))
+            database.execute("INSERT INTO users VALUES (NULL, ?, ?, ?, 0)", (username, sha512(password).hexdigest(), email))
+            
+            #FIXME This is possibly incorrect the "lastrowid" may not be the user_id
+            mail.send_confirmation(username, database.lastrowid, email)
             
             #TODO check that this acutally worked
             #TODO add javascript to redirect to login if successful
@@ -136,6 +140,8 @@ def compose_page(environ):
    elif page_name == "/login.html":
       prompts = defaultdict(str, { 
         "restricted" : "You must login to complete this action</br>",
+        "unverified" : "You must verify your account before you can login</br>",
+        "verified" : "You have successfully verified your account. Please login</br>",
         "failed" : "Invalid username or password</br>"
       })
    
@@ -151,7 +157,16 @@ def compose_page(environ):
       })
       
       page = templates["register"].format(prompt=prompts[qs.get("prompt", [None])[0]])
-      
+   
+   elif page_name.split("/")[1] == "verify":
+      if page_name in mail.live_links:
+         print mail.live_links[page_name]
+         database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (mail.live_links[page_name],))
+         del mail.live_links[page_name]
+         return [('Location', URL + "/login.html?prompt=verified")], "301 REDIRECT", "" 
+      else:
+         return [('Location', URL + "/login.html?prompt=")], "301 REDIRECT", "" 
+            
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
    elif page_name.split(".")[-1] in ("js", "html", "css", "png", "jpg", "gif"):
@@ -160,7 +175,15 @@ def compose_page(environ):
    else:
       raise IOError
 
-   return page
+   status = '200 OK'
+      
+   #Determine MIME type
+   mime = guess_type(page_name)[0] or "text/html" #default to text/html
+      
+   response_headers = [('Content-Type', mime),
+                       ('Content-Length', str(len(page)))]
+      
+   return response_headers, status, page
 
 def application(environ, start_response):
    # the environment variable CONTENT_LENGTH may be empty or missing
@@ -178,14 +201,7 @@ def application(environ, start_response):
       post_header  = handle_POST(environ,  d)
 
    try:
-      response_body = compose_page(environ)
-      status = '200 OK'
-      
-      #Determine MIME type
-      mime = guess_type(path)[0] or "text/html" #default to text/html
-      
-      response_headers = [('Content-Type', mime),
-                          ('Content-Length', str(len(response_body)))]
+      response_headers, status, response_body = compose_page(environ)
 
    except IOError:
       response_body = templates["404"]
