@@ -18,10 +18,13 @@ database = conn.cursor()
 #Go ahead and open the templates, we're bound to need them
 frame = open("templates/frame.html").read()
 
-templates = {"404" : frame.format(content=open("templates/404.html").read()),
+templates = {#open page templates
+             "404" : frame.format(content=open("templates/404.html").read()),
              "index" : frame.format(content=open("index.html").read()),
              "login" : frame.format(content=open("templates/login.html").read()),
              "register" : frame.format(content=open("templates/register.html").read()),
+             
+             #open non-page templates - i.e. those not wrapped in the frame
              "login_link" : open("templates/login_link.html").read(),
              "logout_link" : open("templates/logout_link.html").read(),
              "post" : open("templates/post.html").read()}
