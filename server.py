@@ -103,14 +103,14 @@ def handle_POST(environ, options):
       
       if password != password_verify:
          return [('Location', URL + "/register.html?prompt=mismatch")]
-      elif not username or not password:
+      elif not username or not password or not email:
          return [('Location', URL + "/register.html?prompt=blank")]
       elif len(username) < 5 or len(password) < 6:
          return [('Location', URL + "/register.html?prompt=length")]
       elif not mail.validate_email(email):
          return [('Location', URL + "/register.html?prompt=email")]
       else:
-         q = database.execute("SELECT user_id FROM users WHERE username = ?", (username,)).fetchone()
+         q = database.execute("SELECT user_id FROM users WHERE username = ? OR email = ?", (username, email)).fetchone()
          if q:
             return [('Location', URL + "/register.html?prompt=duplicate")]
          else:
@@ -150,10 +150,11 @@ def compose_page(environ):
    elif page_name == "/register.html":
       prompts = defaultdict(str, { 
          "success" : "Registration successful</br>",
-         "blank" : "Username and password must be non-empty</br>",
+         "blank" : "Username, password, and email must be non-empty</br>",
          "mismatch" : "Password and verification must match</br>",
-         "duplicate" : "User already registered</br>",
-         "length" : "Username must be more than 5 characters, password must be more than 6</br>"
+         "duplicate" : "A user with that name or email is already registered</br>",
+         "length" : "Username must be more than 5 characters, password must be more than 6</br>",
+         "email" : "Invalid email address"
       })
       
       page = templates["register"].format(prompt=prompts[qs.get("prompt", [None])[0]])
