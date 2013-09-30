@@ -12,7 +12,7 @@ from settings import *
 import mail
 import sqlite3
 
-conn = sqlite3.connect('example.db', isolation_level=None)
+conn = sqlite3.connect('database.db', isolation_level=None)
 conn.row_factory = sqlite3.Row
 database = conn.cursor()
 
@@ -21,7 +21,7 @@ frame = open("templates/frame.html").read()
 
 templates = {#open page templates
              "404" : frame.format(content=open("templates/404.html").read()),
-             "index" : frame.format(content=open("index.html").read()),
+             "index" : frame.format(content=open("templates/index.html").read()),
              "login" : frame.format(content=open("templates/login.html").read()),
              "register" : frame.format(content=open("templates/register.html").read()),
              
@@ -166,7 +166,7 @@ def compose_page(environ):
          del mail.live_links[page_name]
          return [('Location', URL + "/login.html?prompt=verified")], "301 REDIRECT", "" 
       else:
-         return [('Location', URL + "/login.html?prompt=")], "301 REDIRECT", "" 
+         return [('Location', URL + "/login.html")], "301 REDIRECT", "" 
             
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe

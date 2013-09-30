@@ -2,7 +2,7 @@ from string import Formatter
 import sqlite3
 import hashlib
 
-conn = sqlite3.connect('example.db')
+conn = sqlite3.connect('database.db')
 c = conn.cursor()
 c.executescript('''
 
