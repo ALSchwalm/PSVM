@@ -9,12 +9,12 @@
 SyntaxHighlighter.config.stripBrs = true;
 SyntaxHighlighter.defaults["toolbar"] = false;
 SyntaxHighlighter.all();
-</script>
+</script>X
 
 {login_link}
 <form method="post" action="new_post">
   <p>
-    <textarea rows="5" cols="45" name="new_post"></textarea>
+    <textarea rows="5" cols="45" name="new_post" onkeydown="insertTab(this,event);"></textarea>
   </p>
   <p>
     <input type="submit" value="Submit">
