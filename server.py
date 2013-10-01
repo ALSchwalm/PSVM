@@ -6,15 +6,11 @@ from mimetypes import guess_type
 from hashlib import sha512
 from Cookie import SimpleCookie
 from collections import defaultdict
+
 from markup import parse_markup
 from settings import *
-
-import mail
-import sqlite3
-
-conn = sqlite3.connect('database.db', isolation_level=None)
-conn.row_factory = sqlite3.Row
-database = conn.cursor()
+from database import *
+from mail import *
 
 #Go ahead and open the templates, we're bound to need them
 frame = open("templates/frame.html").read()
@@ -107,7 +103,7 @@ def handle_POST(environ, options):
          return [('Location', URL + "/register.html?prompt=blank")]
       elif len(username) < 5 or len(password) < 6:
          return [('Location', URL + "/register.html?prompt=length")]
-      elif not mail.validate_email(email):
+      elif not validate_email(email):
          return [('Location', URL + "/register.html?prompt=email")]
       else:
          q = database.execute("SELECT user_id FROM users WHERE username = ? OR email = ?", (username, email)).fetchone()
@@ -117,7 +113,7 @@ def handle_POST(environ, options):
             database.execute("INSERT INTO users VALUES (NULL, ?, ?, ?, 0)", (username, sha512(password).hexdigest(), email))
             
             #FIXME This is possibly incorrect the "lastrowid" may not be the user_id
-            mail.send_confirmation(username, database.lastrowid, email)
+            send_confirmation(username, database.lastrowid, email)
             
             #TODO check that this acutally worked
             #TODO add javascript to redirect to login if successful
@@ -160,10 +156,10 @@ def compose_page(environ):
       page = templates["register"].format(prompt=prompts[qs.get("prompt", [None])[0]])
    
    elif page_name.split("/")[1] == "verify":
-      if page_name in mail.live_links:
-         print mail.live_links[page_name]
-         database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (mail.live_links[page_name],))
-         del mail.live_links[page_name]
+      if page_name in live_links:
+         print live_links[page_name]
+         database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (live_links[page_name],))
+         del live_links[page_name]
          return [('Location', URL + "/login.html?prompt=verified")], "301 REDIRECT", "" 
       else:
          return [('Location', URL + "/login.html")], "301 REDIRECT", "" 

@@ -8,6 +8,7 @@ c.executescript('''
 
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS comments;
+DROP TABLE IF EXISTS code_samples;
 
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY, 
@@ -23,6 +24,12 @@ CREATE TABLE comments (
     body TEXT,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+CREATE TABLE code_samples (
+    sample_id INTEGER PRIMARY KEY,
+    body TEXT
+);
+
     ''')
     
 user = ('user', hashlib.sha512("password").hexdigest(), "invalid@gmail.com", True)
