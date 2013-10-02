@@ -20,6 +20,8 @@ templates = {#open page templates
              "index" : frame.format(content=open("templates/index.html").read()),
              "login" : frame.format(content=open("templates/login.html").read()),
              "register" : frame.format(content=open("templates/register.html").read()),
+             "forgot" : frame.format(content=open("templates/forgot.html").read()),
+             "reset" : frame.format(content=open("templates/reset_password.html").read()),
              
              #open non-page templates - i.e. those not wrapped in the frame
              "login_link" : open("templates/login_link.html").read(),
@@ -90,6 +92,32 @@ def handle_POST(environ, options):
       return [('Location', URL + "/index.html"),
               ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
               ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")]
+   
+   elif action == "/forgot":
+      email = options.get("email", [""])[0]
+      q = database.execute("SELECT user_id, username FROM users WHERE email = ?", (email,)).fetchone()
+      if not q:
+         return [('Location', URL + "/login.html")]
+      send_lostpassword(q["username"], q["user_id"], email)
+      
+      return [('Location', URL + "/login.html")]
+      
+   elif action == "/forgot/reset":
+      key = options.get("key", [""])[0]
+      password = options.get("password", [""])[0]
+      password_verify = options.get("password", ["", ""])[1]
+      print "RESETTING"
+      if key not in forgot_links or password != password_verify:
+          print "FAILED"
+          return [('Location', URL + key)]
+      else:
+          print "WORKING"
+          user_id = forgot_links[key]
+          print user_id
+          database.execute("UPDATE users SET pass_hash = ? WHERE user_id = ?", (sha512(password).hexdigest(), user_id))
+          del forgot_links[key]
+          return [('Location', URL + "/login.html")]
+      
       
    elif action == "/register":
       username = options.get("username", [""])[0]
@@ -115,13 +143,13 @@ def handle_POST(environ, options):
             #FIXME This is possibly incorrect the "lastrowid" may not be the user_id
             send_confirmation(username, database.lastrowid, email)
             
-            #TODO check that this acutally worked
+            #TODO check that this actually worked
             #TODO add javascript to redirect to login if successful
             return [('Location', URL + "/register.html?prompt=success")]
    else:
       return [('Location', URL + action)]
    
-#bulk of the work ocurrs here
+#bulk of the work occurs here
 def compose_page(environ):
    page = ""
    page_name = environ["PATH_INFO"]
@@ -154,15 +182,26 @@ def compose_page(environ):
       })
       
       page = templates["register"].format(prompt=prompts[qs.get("prompt", [None])[0]])
-   
+
+   elif page_name == "/forgot.html":
+      page = templates["forgot"]
+      
    elif page_name.split("/")[1] == "verify":
-      if page_name in live_links:
-         print live_links[page_name]
-         database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (live_links[page_name],))
-         del live_links[page_name]
+      if page_name in verify_links:
+         database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (verify_links[page_name],))
+         del verify_links[page_name]
          return [('Location', URL + "/login.html?prompt=verified")], "301 REDIRECT", "" 
       else:
-         return [('Location', URL + "/login.html")], "301 REDIRECT", "" 
+         return [('Location', URL + "/login.html")], "301 REDIRECT", ""
+
+      pass
+   elif page_name.split("/")[1] == "forgot":
+      if page_name in forgot_links:
+          page = templates["reset"].format(key=page_name)
+          page_name += ".html"
+      else:
+          return [('Location', URL + "/login.html")], "301 REDIRECT", ""
+         
             
    #Try to open anything else. Useful for javascript etc.
    #TODO this is (very) possibly unsafe
