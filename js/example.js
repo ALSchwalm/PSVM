@@ -1,28 +1,18 @@
-function insertTab(o, e)
-{		
-	var kC = e.keyCode ? e.keyCode : e.charCode ? e.charCode : e.which;
-	if (kC == 9 && !e.shiftKey && !e.ctrlKey && !e.altKey)
-	{
-		var oS = o.scrollTop;
-		if (o.setSelectionRange)
-		{
-			var sS = o.selectionStart;	
-			var sE = o.selectionEnd;
-			o.value = o.value.substring(0, sS) + "\t" + o.value.substr(sE);
-			o.setSelectionRange(sS + 1, sS + 1);
-			o.focus();
-		}
-		else if (o.createTextRange)
-		{
-			document.selection.createRange().text = "\t";
-			e.returnValue = false;
-		}
-		o.scrollTop = oS;
-		if (e.preventDefault)
-		{
-			e.preventDefault();
-		}
-		return false;
-	}
-	return true;
-}
+$(document).delegate('#textbox', 'keydown', function(e) {
+  var keyCode = e.keyCode || e.which;
+
+  if (keyCode == 9) {
+    e.preventDefault();
+    var start = $(this).get(0).selectionStart;
+    var end = $(this).get(0).selectionEnd;
+
+    // set textarea value to: text before caret + tab + text after caret
+    $(this).val($(this).val().substring(0, start)
+                + "\t"
+                + $(this).val().substring(end));
+
+    // put caret at right position again
+    $(this).get(0).selectionStart =
+    $(this).get(0).selectionEnd = start + 1;
+  }
+});
