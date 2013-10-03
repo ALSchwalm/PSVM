@@ -278,8 +278,7 @@ urls = [
     (r'^/logout$', logout),
     (r'^/new_post$', new_post),
     
-    #TODO these should only appear at the end of URL
-    (r'(\.js|\.css|\.jpg|\.png)', default),
+    (r'(\.js|\.css|\.jpg|\.png)$', default),
     
     #Anything else should 404
     (r'.*', not_found)
