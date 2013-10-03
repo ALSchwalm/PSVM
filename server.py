@@ -92,8 +92,10 @@ def login_post(environ, start_response):
       username = options.get("username", [""])[0]
       password = options.get("password", [""])[0]
       
+      #Basic SQL inject detection
       if username and (username[0] in ('"', "'") or password[0] in ('"', "'")):
-        start_response(*redirect_header("http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0"))
+        start_response('301 REDIRECT', [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")])
+        return 
       
       q = database.execute("SELECT user_id, pass_hash, verified FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
       result = q.fetchone()
@@ -186,6 +188,11 @@ def index(environ, start_response):
    start_response(*default_header(page_name, page))
    return page
 
+def redirect_index(environ, start_response):
+    page_name = environ["PATH_INFO"]
+    start_response(*redirect_header("/index.html"))
+   
+
 def login(environ, start_response):
     page_name = environ["PATH_INFO"]
     qs = parse_qs(environ["QUERY_STRING"])
@@ -266,8 +273,8 @@ urls = [
     (r'^/register$', register_post),
     (r'^/login\.html.*', login),
     (r'^/index\.html.*', index),
-    (r'^$', index),
-    (r'^/$', index),
+    (r'^$', redirect_index),
+    (r'^/$', redirect_index),
     (r'^/logout$', logout),
     (r'^/new_post$', new_post),
     
