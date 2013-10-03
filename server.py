@@ -90,7 +90,7 @@ def login_post(request):
                                                   ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))])
 
 def logout(request):
-   return request.resnponse("301 REDIRECT", [('Location', URL + "/index.html"),
+   return request.response("301 REDIRECT", [('Location', URL + "/index.html"),
                                             ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
                                             ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")])
 
@@ -203,7 +203,7 @@ def reset(request):
        return request.redirect_header("/login.html")
 
 def default(request):
-    page = open(request.page_name[1:]).read()
+    page = open(request.page_name[1:], 'rb').read()
     return request.default_response(page)
 
 def not_found(request):
