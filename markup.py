@@ -21,7 +21,7 @@ def parse_markup(comment_body):
             id = database.lastrowid
             
             comment_body = re.sub(r"\[code\]\({lang}\)(.*?)\[\\code\]".format(lang=language), 
-                                  r'<pre class="brush: {lang};" id="sample_{id}">\1</pre>'.format(lang=language, id=id), 
+                                  r'<div class="code_sample" value="{id}"><pre class="brush: {lang};">\1</pre></div>'.format(lang=language, id=id), 
                                   comment_body,
                                   count = 1,
                                   flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
