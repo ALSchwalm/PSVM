@@ -20,7 +20,7 @@ def parse_markup(comment_body):
             database.execute("INSERT INTO code_samples VALUES (NULL, ?, ?, ?)", (language, unescape(sample_body), sample_body))
             id = database.lastrowid
             
-            comment_body = re.sub(r"\[code\]\({lang}\)(.*?)\[\\code\]".format(lang=language), 
+            comment_body = re.sub(r"\[code\]\({lang}\)(.*?)(?:\n)?\[\\code\]".format(lang=language), 
                                   r'<div class="code_sample" value="{id}"><pre class="brush: {lang};">\1</pre></div>'.format(lang=language, id=id), 
                                   comment_body,
                                   count = 1,
