@@ -69,6 +69,7 @@ Users
 \subsubsection{Steps}
 
 \begin{enumerate}
+\item User logs in
 \item User starts at the thread page he commented on.
 \item Page displays ‘edit’ button alongside posts this user made
 \item User clicks on ‘edit’
@@ -90,6 +91,7 @@ Users
 
 \subsubsection{Steps}
 \begin{enumerate}
+\item User logs in
 \item User selects the ``PM'' button from the main page or their user page.
 \item The User types the username of the user to receive the message
 \item User presses the ``Send'' button.
@@ -106,33 +108,32 @@ Users
 \subsubsection{Steps}
 
 \begin{enumerate}
+\item User logs in
 \item The user clicks a button under a post called Quote
 \item The quote then appears in the post box for the user to add more content
 \item When the post is submitted, the quote displays in the post with the special quote html
 \end{enumerate}
 
-
-\subsection{Ban Users (Requried)}
+\subsection{Create Subforum (Required)}
 \subsubsection{Description}
- 
-Admin removes a user’s access to the forum
- 
+Subforums are sections of the forum containing threads that are alike. This allows admins to create a new subforum on the site. Subforum contain a title and a brief description of what to post in the subforum.
+
 \subsubsection{Actors}
- 
+
 Admin
- 
+
 \subsubsection{Steps}
-
-\begin{enumerate}
-\item Admin begins on the profile page of the user he intends to ban
-\item Application displays a list of commands at the top of the page, among which is ‘ban’
-\item Admin selects the ban command
-\item Application prompts to confirm the ban request
-\item Admin confirms
-\item Application removes the user from the user list, adds the username to a blacklist
-\item Application displays a confirmation of the user’s removal
-
+\begin {enumerate}
+\item Admin logs in
+\item Admin enters home page
+\item Admin navigates to admin tools
+\item Admin uses admin tools to create a new subforum
+\item Application prompts user for a title and description for the subforum
+\item Admin fills out form
+\item Admin confirms completion
+\item Application stores subforum information
 \end {enumerate}
+
 
 \subsection{Create Thread (Requried)}
 \subsubsection{Description}
@@ -146,6 +147,7 @@ Users
 \subsubsection{Steps}
 
 \begin{enumerate}
+\item User logs in
 \item The user clicks a button called Create Post 
 \item The user enters the title of the new thread and the location of where to post the thread
 \item The user enters the first post for the thread
@@ -165,6 +167,7 @@ Users
 \subsubsection{Steps}
 
 \begin{enumerate}
+\item User logs in
 \item The user clicks the link to go to their profile.
 \item The user clicks the link to edit their profile.
 \item The user clicks the link to edit their signature.
@@ -186,6 +189,7 @@ Users
 \subsubsection{Steps}
 
 \begin{enumerate}
+\item User logs in
 \item The user finds the thread containing the post they want to delete.
 \item The user scrolls to the post that they want to delete.
 \item The user clicks the link to delete the post.
@@ -208,6 +212,7 @@ Users
 \subsubsection{Steps}
 
 \begin{enumerate}
+\item User logs in
 \item The user navigates to the offending user’s profile page.
 \item The user selects the “Report User” option from a list of options.
 \item The page prompts the user to enter a reason for reporting the offending user.
@@ -229,6 +234,7 @@ Users
 \subsubsection{Steps}
 
 \begin{enumerate}
+\item User logs in
 \item The user clicks the button to navigate to to their profile page
 \item The user clicks the “change password” button to navigate to the change password page
 \item The user enters their current password
@@ -257,63 +263,236 @@ Users
 Each of the subforum pages has a listing of the posts and threads made within that subforum. Users can view the list, which contains
 information about each post, such as the number of “likes” it has received, or the number of comments upon it.
 
+\subsubsection {Actors}
+User
+
+\subsubsection{Steps}
+\begin {enumerate}
+\item User logs in
+\item User navigates to the desired forum
+\item Application presents the user with the most recent posts within that forum
+\item User selects a post to view
+\end{enumerate}
+
 \subsection{Search Subforum (Requried)}
 \subsubsection{Description}
 The user can initiate a search within a subforum, at which point the application returns a list of the posts with relevant titles and tags.
+
+\subsubsection{Actors}
+User
+
+\subsubsection{Steps}
+\begin{enumerate}
+\item User logs in
+\item User navigates to desired subforum
+\item User enters the search terms into the search box
+\item Application reviews database for posts matching the search terms
+\item Application returns best results
+\item User selects desired returned post
+\end {enumerate}
 
 \subsection{“Like” Posts (Medium)}
 \subsubsection{Description}
 Within a post’s thread, a button is located next to or below the post’s content. Pressing this button adds a “like” to the post’s count, which is used to
 determine which posts show up on the front page of the forum, as well as being a general gauge of the content’s popularity.
 
+\subsubsection{Actors}
+Users
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item The user logs into the website
+\item The user presses the like button under a current post
+\item Like appears under the post 
+\end{enumerate}
+
+
 \subsection{Upload User Image (Medium)}
 \subsubsection{Description}
 
 Users can upload an image to their profile which will be displayed next to their posts, or by PMs they send to other users.
+
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+\begin{enumerate}
+\item User logins into the system
+\item Navigate to the profile page
+\item User clicks the ``Upload profile picture'' button
+\item Selects an image to upload
+\item The image is uploaded to the server and displayed next to the users name
+\end{enumerate}
+
+
 
 \subsection{Tag Threads (Medium)}
 \subsubsection{Description}
 
 Threads may be ``tagged'' with labels indicating their content. This can help identify the keywords for the search engine, or other interested users.
 
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+\begin{enumerate}
+\item User logs in
+\item User creates a thread
+\item While creating the thread, the user lists ``tags''
+\item Other users will be presented with this thread when searching
+\end{enumerate}
+
+
 \subsection{Embeded HTML (Medium)}
 \subsubsection{Description}
 
 It can sometimes be useful to embed limited HTML in a post (i.e., for hotlinking images or embeding youtube videos).
+
+\subsubsection{Actors}
+
+Users
+
+\subsubsection{Steps}
+\begin{enumerate}
+\item User logs in
+\item User creates a post
+\item While writting the post, the users uses a 'markup' language to format code/make link, etc.
+\item When the user submits the post, the server adds the html formatting
+\end{enumerate}
 
 \subsection{Pin Thread (Required)}
 \subsubsection{Description}
 Admins can pin a thread to the top of a category. This post will always appear at top of the page.
 This function will be used by admin if the post is important and needs to be seen by all users.
 
+\subsubsection{Actors}
+
+Admin
+
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item The admin logs in
+\item The admin navigates to the category of the thread
+\item The admin press the pin button next to the title of the thread
+\end{enumerate}
+
 \subsection{Edit Signature (Medium)}
 \subsubsection{Description}
 Allows the user to change their signature, a line that appears under any comment they make. By default, there is no signature.
+
+\subsubsection{Actors}
+User
+
+\subsubsection{Steps}
+\begin {enumerate}
+\item User logs in
+\item User navigates to their profile page
+\item User selects the “Edit Signature” option next to the signature display box
+\item The application presents the user with a text box
+\item User fills out text form with the desired signature
+\item User confirms completion
+\item Application stores the changed signature in the database
+\end {enumerate}
 
 \subsection{Edit Description (Requried)}
 \subsubsection{Description}
 Allows the user to change the description within their profile.
 The description field is used to share information about themselves, their posting habits, or their coding abilities/expertise.
 
+\subsubsection {Actors}
+User
+
+\subsubsection {Steps}
+\begin {enumerate}
+\item The User logs in
+\item User navigates to their profile page
+\item User selects the “Edit Description” option next to the description field
+\item Application presents user with a text form to enter the desired description
+\item User fills out the text form with the description
+\item User confirms completion
+\item Application stores the changed description in the database
+\end {enumerate}
+
+
 \subsection{Move Thread (Required)}
 \subsubsection{Description}
 Admins can move a thread to a different category.
 If the thread posted by a user is better fitted for another category the admins can move the thread into the better category. 
+
+\subsubsection{Actors}
+
+Admin
+
+\subsubsection{Steps}
+\begin {enumerate}
+\item Admin logs in
+\item Admin browses to the thread that needs to be moved
+\item Admin selects the “move” option
+\item System prompts the admin for the forum to move thread to
+\item Admin confirms
+\item System moves thread
+\end {enumerate}
+
+
 
 \subsection{Ban Users (Required)}
 \subsubsection{Description}
  
 Admin removes a user’s access to the forum
 
+\subsubsection{Actors}
+ 
+Admin
+ 
+\subsubsection{Steps}
+\begin{enumerate}
+\item Admin logs in
+\item Admin begins on the profile page of the user he intends to ban
+\item Application displays a list of commands at the top of the page, among which is ‘ban’
+\item Admin selects the ban command
+\item Application prompts to confirm the ban request
+\item Admin confirms
+\item Application removes the user from the user list, adds the username to a blacklist
+\item Application displays a confirmation of the user’s removal
+\end {enumerate}
+
+
+
 \subsection{Lock Thread (Required)}
 \subsubsection{Description}
 Admins can lock a thread, so no more posts can be made to the thread. Threads can be lock only by Admins.
 If a thread is going off-topic or against the rules of the site, the thread can be closed 
 
+\subsubsection{Actors}
+
+Admin
+\subsubsection{Steps}
+
+\begin{enumerate}
+\item The admin logs into the webpage
+\item The admin browses to the category of the thread 
+\item The admin presses the button of a lock next to the thread title
+\end{enumerate}
+
 
 \subsection{Edit Profile (Required)}
 \subsubsection{Description}
 The user can edit elements of their profile by clicking edit profile when viewing their own profile page.
+
+\subsubsection{Actors}
+User
+
+\subsubsection{Steps}
+\begin {enumerate}
+\item User logs in to website
+\item User navigates to their profile page
+\item User can select the “Edit …” option next to any of their profile components (picture, description, or signature)
+\item Application allows user to edit the item
+\end {enumerate}
+
 
 \subsection{Create Category (Medium)}
 \subsubsection{Description}
