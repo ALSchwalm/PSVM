@@ -11,6 +11,7 @@ from settings import *
 from database import *
 from mail import *
 from request import *
+from execute import *
 
 #Go ahead and open the templates, we're bound to need them
 frame = open("templates/frame.html").read()
@@ -44,8 +45,9 @@ def is_login(environ):
    except KeyError:
       return False
 
-def add_post(user_id, post):
-   database.execute("INSERT INTO comments VALUES(NULL, ?, ?)", (user_id[0], post))
+def add_post(user_id, post, unescaped):
+   database.execute("INSERT INTO comments VALUES(NULL, ?, ?, ?)",
+                    (user_id[0], post, unescaped))
 
 def compose_posts():
    posts = database.execute("SELECT users.username, comments.body FROM users, comments WHERE comments.user_id = users.user_id").fetchall()
@@ -59,9 +61,10 @@ def new_post(request):
 
         # Always escape user input to avoid script injection
         #TODO store the unmodified version to allow edits
+        unescaped = new_post
         new_post = parse_markup(escape(new_post))
 
-        add_post(user, new_post)
+        add_post(user, new_post, unescaped)
         return request.redirect_response("/index.html")
     else:
        return request.redirect_response("/login.html?prompt=restricted")
@@ -72,7 +75,7 @@ def login_post(request):
       
       #Basic SQL inject detection
       if username and (username[0] in ('"', "'") or password[0] in ('"', "'")):
-        return request.response('301 REDIRECT', [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")])
+         return request.response('301 REDIRECT', [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")])
       
       q = database.execute("SELECT user_id, pass_hash, verified FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
       result = q.fetchone()
@@ -87,10 +90,10 @@ def login_post(request):
                                                   ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))])
 
 def logout(request):
-   return request.response("301 REDIRECT", [('Location', URL + "/index.html"),
+   return request.resnponse("301 REDIRECT", [('Location', URL + "/index.html"),
                                             ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
                                             ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")])
-              
+
 def forgot_post(request):
     email = request.options.get("email", [""])[0]
     q = database.execute("SELECT user_id, username FROM users WHERE email = ?", (email,)).fetchone()
@@ -98,7 +101,7 @@ def forgot_post(request):
         return request.redirect_response("/login.html")
     else:
         send_lostpassword(q["username"], q["user_id"], email)
-      
+
         return request.redirect_response("/login.html")
  
 def reset_post(request):
@@ -208,28 +211,29 @@ def not_found(request):
     return request.response('404 NOT FOUND', [('Content-Type', 'text/html'),
                                               ('Content-Length', str(len(page)))],
                             page)
-    
+
 urls = [
-    (r'^/verify/[0-9a-f]{128}$', verify),
-    (r'^/forgot\.html(\?.*|$)', forgot),
-    (r'^/forgot$', forgot_post),
-    (r'^/login$', login_post),
-    (r'^/forgot/reset$', reset_post),
-    (r'^/forgot/[0-9a-f]{128}$', reset),
-    (r'^/register\.html(\?.*|$)', register),
-    (r'^/register$', register_post),
-    (r'^/login\.html(\?.*|$)', login),
-    (r'^/index\.html(\?.*|$)', index),
-    (r'^$', redirect_index),
-    (r'^/$', redirect_index),
-    (r'^/logout$', logout),
-    (r'^/new_post$', new_post),
+   (r'^/verify/[0-9a-f]{128}$', verify),
+   (r'^/forgot\.html(\?.*|$)', forgot),
+   (r'^/forgot$', forgot_post),
+   (r'^/login$', login_post),
+   (r'^/forgot/reset$', reset_post),
+   (r'^/forgot/[0-9a-f]{128}$', reset),
+   (r'^/register\.html(\?.*|$)', register),
+   (r'^/register$', register_post),
+   (r'^/execute/\d+', execute),
+   (r'^/login\.html(\?.*|$)', login),
+   (r'^/index\.html(\?.*|$)', index),
+   (r'^$', redirect_index),
+   (r'^/$', redirect_index),
+   (r'^/logout$', logout),
+   (r'^/new_post$', new_post),
     
-    (r'(\.js|\.css|\.jpg|\.png)$', default),
+   (r'(\.js|\.css|\.jpg|\.png)$', default),
     
-    #Anything else should 404
-    (r'.*', not_found)
-    ]
+   #Anything else should 404
+   (r'.*', not_found)
+]
 
 def application(environ, start_response):
    path = environ["PATH_INFO"]
@@ -244,11 +248,8 @@ def application(environ, start_response):
            break
     
    except IOError:
-      response_body = templates["404"]
-      status = '404 NOT FOUND'
-      response_headers = [('Content-Type', 'text/html'),
-                          ('Content-Length', str(len(response_body)))]
-
+      response_body = not_found(r)
+      
    return [response_body]
 
 httpd = make_server(parsed_MAIN_URL.hostname, parsed_MAIN_URL.port, application)

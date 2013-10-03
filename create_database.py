@@ -22,11 +22,14 @@ CREATE TABLE comments (
     comment_id INTEGER PRIMARY KEY,
     user_id INTEGER NOT NULL,
     body TEXT,
+    raw TEXT,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE code_samples (
     sample_id INTEGER PRIMARY KEY,
+    language TEXT,
+    raw TEXT,
     body TEXT
 );
 
