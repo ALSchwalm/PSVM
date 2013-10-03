@@ -2,7 +2,6 @@
 
 from wsgiref.simple_server import make_server
 from cgi import parse_qs, escape
-from mimetypes import guess_type
 from hashlib import sha512
 from Cookie import SimpleCookie
 from collections import defaultdict
@@ -11,6 +10,7 @@ from markup import parse_markup
 from settings import *
 from database import *
 from mail import *
+from request import *
 
 #Go ahead and open the templates, we're bound to need them
 frame = open("templates/frame.html").read()
@@ -50,124 +50,89 @@ def add_post(user_id, post):
 def compose_posts():
    posts = database.execute("SELECT users.username, comments.body FROM users, comments WHERE comments.user_id = users.user_id").fetchall()
    return "".join([templates["post"].format(username=post['username'],
-                                            content=post['body']) for post in posts])
-
-
-def default_header(page_name, page):
-    status = '200 OK'
-      
-    #Determine MIME type
-    mime = guess_type(page_name)[0] or "text/html" #default to text/html
-      
-    response_headers = [('Content-Type', mime),
-                       ('Content-Length', str(len(page)))]
-    return status, response_headers
-    
-def redirect_header(address):
-    return '301 REDIRECT', [('Location', URL + address)]
-      
+                                            content=post['body']) for post in posts])      
                                             
-def new_post(environ, start_response):
-    request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-    request_body = environ['wsgi.input'].read(request_body_size)
-    options = parse_qs(request_body)
-    user = is_login(environ)
+def new_post(request):
+    user = is_login(request.environ)
     if user:
-        new_post = options.get("new_post", [""])[0]
+        new_post = request.options.get("new_post", [""])[0]
 
         # Always escape user input to avoid script injection
         #TODO store the unmodified version to allow edits
         new_post = parse_markup(escape(new_post))
 
         add_post(user, new_post)
-        start_response(*redirect_header("/index.html"))
+        return request.redirect_response("/index.html")
     else:
-        start_response(*redirect_header("/login.html?prompt=restricted"))
+       return request.redirect_response("/login.html?prompt=restricted")
 
-def login_post(environ, start_response):
-      request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-      request_body = environ['wsgi.input'].read(request_body_size)
-      options = parse_qs(request_body)
-      
-      username = options.get("username", [""])[0]
-      password = options.get("password", [""])[0]
+def login_post(request):
+      username = request.options.get("username", [""])[0]
+      password = request.options.get("password", [""])[0]
       
       #Basic SQL inject detection
       if username and (username[0] in ('"', "'") or password[0] in ('"', "'")):
-        start_response('301 REDIRECT', [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")])
-        return 
+        return request.response('301 REDIRECT', [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")])
       
       q = database.execute("SELECT user_id, pass_hash, verified FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
       result = q.fetchone()
       
       if not result or not username or not password:
-        start_response(*redirect_header("/login.html?prompt=failed"))
+         return request.redirect_response("/login.html?prompt=failed")
       elif result["verified"] != True:
-        start_response(*redirect_header("/login.html?prompt=unverified"))
+         return request.redirect_response("/login.html?prompt=unverified")
       else:
-        start_response("301 REDIRECT", [('Location', URL + "/index.html"),
-              ("Set-Cookie", "USERID="+str(result["user_id"])),
-              ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))])
+         return request.response("301 REDIRECT", [('Location', URL + "/index.html"),
+                                                  ("Set-Cookie", "USERID="+str(result["user_id"])),
+                                                  ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))])
 
-def logout(environ, start_response):
-    start_response("301 REDIRECT", [('Location', URL + "/index.html"),
-              ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
-              ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")])
+def logout(request):
+   return request.response("301 REDIRECT", [('Location', URL + "/index.html"),
+                                            ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
+                                            ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")])
               
-def forgot_post(environ, start_response):
-    request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-    request_body = environ['wsgi.input'].read(request_body_size)
-    options = parse_qs(request_body)
-     
-    email = options.get("email", [""])[0]
+def forgot_post(request):
+    email = request.options.get("email", [""])[0]
     q = database.execute("SELECT user_id, username FROM users WHERE email = ?", (email,)).fetchone()
     if not q:
-        start_response(*redirect_header("/login.html"))
+        return request.redirect_response("/login.html")
     else:
         send_lostpassword(q["username"], q["user_id"], email)
       
-        start_response(*redirect_header("/login.html"))
+        return request.redirect_response("/login.html")
  
-def reset_post(environ, start_response):
-      request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-      request_body = environ['wsgi.input'].read(request_body_size)
-      options = parse_qs(request_body)
-     
-      key = options.get("key", [""])[0]
-      password = options.get("password", [""])[0]
-      password_verify = options.get("password", ["", ""])[1]
+def reset_post(request):
+      key = request.options.get("key", [""])[0]
+      password = request.options.get("password", [""])[0]
+      password_verify = request.options.get("password", ["", ""])[1]
       
       if key not in forgot_links or password != password_verify:
-          start_response(*redirect_header(URL + key))
+         return request.redirect_response(URL + key)
       else:
           user_id = forgot_links[key]
-          print user_id
+          
           database.execute("UPDATE users SET pass_hash = ? WHERE user_id = ?", (sha512(password).hexdigest(), user_id))
           del forgot_links[key]
-          start_response(*redirect_header("/login.html")) 
+          return request.redirect_response("/login.html")
 
-def register_post(environ, start_response):
-      request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-      request_body = environ['wsgi.input'].read(request_body_size)
-      options = parse_qs(request_body)
-
-      username = options.get("username", [""])[0]
-      password = options.get("password", [""])[0]
-      password_verify = options.get("password", ["", ""])[1]
-      email = options.get("email", [""])[0]
+def register_post(request):
+      username = request.options.get("username", [""])[0]
+      password = request.options.get("password", [""])[0]
+      password_verify = request.options.get("password", ["", ""])[1]
+      email = request.options.get("email", [""])[0]
       
       if password != password_verify:
-         start_response(*redirect_header("/register.html?prompt=mismatch"))
+         return request.redirect_response("/register.html?prompt=mismatch")
       elif not username or not password or not email:
-         start_response(*redirect_header("/register.html?prompt=blank"))
+         return request.redirect_response("/register.html?prompt=blank")
       elif len(username) < 5 or len(password) < 6:
-         start_response(*redirect_header("/register.html?prompt=length"))
+         return request.redirect_response("/register.html?prompt=length")
       elif not validate_email(email):
-         start_response(*redirect_header("/register.html?prompt=email"))
+         return request.redirect_response("/register.html?prompt=email")
       else:
          q = database.execute("SELECT user_id FROM users WHERE username = ? OR email = ?", (username, email)).fetchone()
          if q:
-            start_response(*redirect_header("/register.html?prompt=duplicate"))
+            return request.redirect_response("/register.html?prompt=duplicate")
          else:
             database.execute("INSERT INTO users VALUES (NULL, ?, ?, ?, 0)", (username, sha512(password).hexdigest(), email))
             
@@ -176,26 +141,20 @@ def register_post(environ, start_response):
             
             #TODO check that this actually worked
             #TODO add javascript to redirect to login if successful
-            start_response(*redirect_header("/register.html?prompt=success"))
+            return request.redirect_response("/register.html?prompt=success")
 
-def index(environ, start_response):
-   page_name = environ["PATH_INFO"]
-   
+def index(request):
    page = templates["index"].format(posts = compose_posts() or 'None',
-                                    login_link=templates["login_link"] if not is_login(environ) 
-                                    else templates["logout_link"].format(username=is_login(environ)[1]))
+                                    login_link=templates["login_link"] if not is_login(request.environ) 
+                                    else templates["logout_link"].format(username=is_login(request.environ)[1]))
    
-   start_response(*default_header(page_name, page))
-   return page
+   return request.default_response(page)
 
-def redirect_index(environ, start_response):
-    start_response(*redirect_header("/index.html"))
+def redirect_index(request):
+   return request.redirect_response("/index.html")
    
 
-def login(environ, start_response):
-    page_name = environ["PATH_INFO"]
-    qs = parse_qs(environ["QUERY_STRING"])
-
+def login(request):
     prompts = defaultdict(str, { 
         "restricted" : "You must login to complete this action</br>",
         "unverified" : "You must verify your account before you can login</br>",
@@ -203,14 +162,10 @@ def login(environ, start_response):
         "failed" : "Invalid username or password</br>"
     })
 
-    page = templates["login"].format(prompt=prompts[qs.get("prompt", [None])[0]])
-    start_response(*default_header(page_name, page))
-    return page
+    page = templates["login"].format(prompt=prompts[request.query_string.get("prompt", [None])[0]])
+    return request.default_response(page)
 
-def register(environ, start_response):
-    page_name = environ["PATH_INFO"]
-    qs = parse_qs(environ["QUERY_STRING"])
-    
+def register(request):
     prompts = defaultdict(str, { 
         "success" : "Registration successful</br>",
         "blank" : "Username, password, and email must be non-empty</br>",
@@ -220,47 +175,39 @@ def register(environ, start_response):
         "email" : "Invalid email address"
     })
 
-    page = templates["register"].format(prompt=prompts[qs.get("prompt", [None])[0]])
-    start_response(*default_header(page_name, page))
-    return page
+    page = templates["register"].format(prompt=prompts[request.query_string.get("prompt", [None])[0]])
+    return request.default_response(page)
     
-def verify(environ, start_response):
-    page_name = environ["PATH_INFO"]
-    if page_name in verify_links:
-        database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (verify_links[page_name],))
-        del verify_links[page_name]
-        start_response(*redirect_header("/login.html?prompt=verified")) 
+def verify(request):
+    if request.page_name in verify_links:
+        database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (verify_links[request.page_name],))
+        del verify_links[request.page_name]
+        return request.redirect_response("/login.html?prompt=verified") 
     else:
-        start_response(*redirect_header("/login.html"))
+       return request.redirect_response("/login.html") 
 
-def forgot(environ, start_response):
-    page_name = environ["PATH_INFO"]
+
+def forgot(request):
     page = templates["forgot"]
-    start_response(*default_header(page_name, page))
-    return page
+    return request.default_response(page)
 
-def reset(environ, start_response):
-    page_name = environ["PATH_INFO"]
-    if page_name in forgot_links:
-        page = templates["reset"].format(key=page_name)
-        page_name += ".html"
-        start_response(*default_header(page_name, page))
-        return page
+def reset(request):
+    if request.page_name in forgot_links:
+        page = templates["reset"].format(key=request.page_name)
+        request.page_name += ".html"
+        return request.default_response(page)
     else:
-        start_response(*redirect_header("/login.html"))
+       return request.redirect_header("/login.html")
 
-def default(environ, start_response):
-    page_name = environ["PATH_INFO"]
-    page = open(page_name[1:]).read()
-    start_response(*default_header(page_name, page))
-    return page
+def default(request):
+    page = open(request.page_name[1:]).read()
+    return request.default_response(page)
 
-def not_found(environ, start_response):
-    page_name = environ["PATH_INFO"]
+def not_found(request):
     page = templates["404"]
-    start_response( '404 NOT FOUND', [('Content-Type', 'text/html'),
-                                      ('Content-Length', str(len(page)))])
-    return page
+    return request.response('404 NOT FOUND', [('Content-Type', 'text/html'),
+                                              ('Content-Length', str(len(page)))],
+                            page)
     
 urls = [
     (r'^/verify/[0-9a-f]{128}$', verify),
@@ -287,13 +234,14 @@ urls = [
 def application(environ, start_response):
    path = environ["PATH_INFO"]
    response_body = ""
-
+   r = Request(environ, start_response)
+   
    try:
       for regex, callback in urls:
         match = re.search(regex, path)
         if match is not None:
-            response_body = callback(environ, start_response) or ""
-            break
+           response_body = callback(r) or ""
+           break
     
    except IOError:
       response_body = templates["404"]
