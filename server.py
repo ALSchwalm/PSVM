@@ -189,7 +189,6 @@ def index(environ, start_response):
    return page
 
 def redirect_index(environ, start_response):
-    page_name = environ["PATH_INFO"]
     start_response(*redirect_header("/index.html"))
    
 
@@ -261,18 +260,19 @@ def not_found(environ, start_response):
     page = templates["404"]
     start_response( '404 NOT FOUND', [('Content-Type', 'text/html'),
                                       ('Content-Length', str(len(page)))])
+    return page
     
 urls = [
-    (r'^/verify/.+', verify),
-    (r'^/forgot\.html.*', forgot),
+    (r'^/verify/[0-9a-f]{128}$', verify),
+    (r'^/forgot\.html(\?.*|$)', forgot),
     (r'^/forgot$', forgot_post),
     (r'^/login$', login_post),
     (r'^/forgot/reset$', reset_post),
-    (r'^/forgot/.+', reset),
-    (r'^/register\.html.*', register),
+    (r'^/forgot/[0-9a-f]{128}$', reset),
+    (r'^/register\.html(\?.*|$)', register),
     (r'^/register$', register_post),
-    (r'^/login\.html.*', login),
-    (r'^/index\.html.*', index),
+    (r'^/login\.html(\?.*|$)', login),
+    (r'^/index\.html(\?.*|$)', index),
     (r'^$', redirect_index),
     (r'^/$', redirect_index),
     (r'^/logout$', logout),
