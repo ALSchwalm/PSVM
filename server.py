@@ -6,29 +6,8 @@ from hashlib import sha512
 from Cookie import SimpleCookie
 from collections import defaultdict
 
-from markup import parse_markup
-from settings import *
-from database import *
-from mail import *
-from request import *
-from execute import *
+from backend import *
 
-#Go ahead and open the templates, we're bound to need them
-frame = open("templates/frame.html").read()
-
-templates = {#open page templates
-             "404" : frame.format(content=open("templates/404.html").read()),
-             "index" : frame.format(content=open("templates/index.html").read()),
-             "login" : frame.format(content=open("templates/login.html").read()),
-             "register" : frame.format(content=open("templates/register.html").read()),
-             "forgot" : frame.format(content=open("templates/forgot.html").read()),
-             "reset" : frame.format(content=open("templates/reset_password.html").read()),
-             
-             #open non-page templates - i.e. those not wrapped in the frame
-             "login_link" : open("templates/login_link.html").read(),
-             "logout_link" : open("templates/logout_link.html").read(),
-             "post" : open("templates/post.html").read()}
- 
 def is_login(environ):
    try:
       c = SimpleCookie(environ.get("HTTP_COOKIE",""))
@@ -69,82 +48,6 @@ def new_post(request):
     else:
        return request.redirect_response("/login.html?prompt=restricted")
 
-def login_post(request):
-      username = request.options.get("username", [""])[0]
-      password = request.options.get("password", [""])[0]
-      
-      #Basic SQL inject detection
-      if username and (username[0] in ('"', "'") or password[0] in ('"', "'")):
-         return request.response('301 REDIRECT', [('Location', "http://www.youtube.com/embed/rhr44HD49-U?autoplay=1&loop=1&playlist=rhr44HD49-U&showinfo=0")])
-      
-      q = database.execute("SELECT user_id, pass_hash, verified FROM users WHERE username = ? AND pass_hash = ?", (username, sha512(password).hexdigest()))
-      result = q.fetchone()
-      
-      if not result or not username or not password:
-         return request.redirect_response("/login.html?prompt=failed")
-      elif result["verified"] != True:
-         return request.redirect_response("/login.html?prompt=unverified")
-      else:
-         return request.response("301 REDIRECT", [('Location', URL + "/index.html"),
-                                                  ("Set-Cookie", "USERID="+str(result["user_id"])),
-                                                  ("Set-Cookie", "PASSHASH="+str(result["pass_hash"]))])
-
-def logout(request):
-   return request.response("301 REDIRECT", [('Location', URL + "/index.html"),
-                                            ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
-                                            ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")])
-
-def forgot_post(request):
-    email = request.options.get("email", [""])[0]
-    q = database.execute("SELECT user_id, username FROM users WHERE email = ?", (email,)).fetchone()
-    if not q:
-        return request.redirect_response("/login.html")
-    else:
-        send_lostpassword(q["username"], q["user_id"], email)
-
-        return request.redirect_response("/login.html")
- 
-def reset_post(request):
-      key = request.options.get("key", [""])[0]
-      password = request.options.get("password", [""])[0]
-      password_verify = request.options.get("password", ["", ""])[1]
-      
-      if key not in forgot_links or password != password_verify:
-         return request.redirect_response(URL + key)
-      else:
-          user_id = forgot_links[key]
-          
-          database.execute("UPDATE users SET pass_hash = ? WHERE user_id = ?", (sha512(password).hexdigest(), user_id))
-          del forgot_links[key]
-          return request.redirect_response("/login.html")
-
-def register_post(request):
-      username = request.options.get("username", [""])[0]
-      password = request.options.get("password", [""])[0]
-      password_verify = request.options.get("password", ["", ""])[1]
-      email = request.options.get("email", [""])[0]
-      
-      if password != password_verify:
-         return request.redirect_response("/register.html?prompt=mismatch")
-      elif not username or not password or not email:
-         return request.redirect_response("/register.html?prompt=blank")
-      elif len(username) < 5 or len(password) < 6:
-         return request.redirect_response("/register.html?prompt=length")
-      elif not validate_email(email):
-         return request.redirect_response("/register.html?prompt=email")
-      else:
-         q = database.execute("SELECT user_id FROM users WHERE username = ? OR email = ?", (username, email)).fetchone()
-         if q:
-            return request.redirect_response("/register.html?prompt=duplicate")
-         else:
-            database.execute("INSERT INTO users VALUES (NULL, ?, ?, ?, 0)", (username, sha512(password).hexdigest(), email))
-            
-            #FIXME This is possibly incorrect the "lastrowid" may not be the user_id
-            send_confirmation(username, database.lastrowid, email)
-            
-            #TODO check that this actually worked
-            #TODO add javascript to redirect to login if successful
-            return request.redirect_response("/register.html?prompt=success")
 
 def index(request):
    page = templates["index"].format(posts = compose_posts() or 'None',
@@ -156,51 +59,6 @@ def index(request):
 def redirect_index(request):
    return request.redirect_response("/index.html")
    
-
-def login(request):
-    prompts = defaultdict(str, { 
-        "restricted" : "You must login to complete this action</br>",
-        "unverified" : "You must verify your account before you can login</br>",
-        "verified" : "You have successfully verified your account. Please login</br>",
-        "failed" : "Invalid username or password</br>"
-    })
-
-    page = templates["login"].format(prompt=prompts[request.query_string.get("prompt", [None])[0]])
-    return request.default_response(page)
-
-def register(request):
-    prompts = defaultdict(str, { 
-        "success" : "Registration successful</br>",
-        "blank" : "Username, password, and email must be non-empty</br>",
-        "mismatch" : "Password and verification must match</br>",
-        "duplicate" : "A user with that name or email is already registered</br>",
-        "length" : "Username must be more than 5 characters, password must be more than 6</br>",
-        "email" : "Invalid email address"
-    })
-
-    page = templates["register"].format(prompt=prompts[request.query_string.get("prompt", [None])[0]])
-    return request.default_response(page)
-    
-def verify(request):
-    if request.page_name in verify_links:
-        database.execute("UPDATE users SET verified = 1 WHERE user_id = ?", (verify_links[request.page_name],))
-        del verify_links[request.page_name]
-        return request.redirect_response("/login.html?prompt=verified") 
-    else:
-       return request.redirect_response("/login.html") 
-
-
-def forgot(request):
-    page = templates["forgot"]
-    return request.default_response(page)
-
-def reset(request):
-    if request.page_name in forgot_links:
-        page = templates["reset"].format(key=request.page_name)
-        request.page_name += ".html"
-        return request.default_response(page)
-    else:
-       return request.redirect_header("/login.html")
 
 def default(request):
     page = open(request.page_name[1:], 'rb').read()
