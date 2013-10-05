@@ -5,7 +5,18 @@ from wsgiref.simple_server import make_server
 from backend import *
 
 def index(request):
-   page = templates["index"].format(threads=compose_threads("1") or 'None',
+   q = database.execute("""
+
+   SELECT category_id FROM categories
+
+   """).fetchall()
+
+   categories_text = ""
+   for category in q:
+      categories_text += compose_category(category["category_id"])
+      categories_text += "<br>"
+   
+   page = templates["index"].format(categories=categories_text or 'None',
                                     login_link=templates["login_link"] if not is_login(request.environ) 
                                     else templates["logout_link"].format(username=is_login(request.environ)[1]))
    
@@ -34,6 +45,7 @@ urls = [
    (r'^/register\.html(\?.*|$)', register),
    (r'^/register$', register_post),
    (r'^/execute/\d+', execute),
+   (r'^/category\.html(\?.*|$)', category),
    (r'^/login\.html(\?.*|$)', login),
    (r'^/index\.html(\?.*|$)', index),
    (r'^/thread\.html(\?.*|$)', thread),

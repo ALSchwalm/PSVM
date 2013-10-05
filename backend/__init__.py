@@ -10,3 +10,4 @@ from reset import *
 from login import *
 from post import *
 from thread import *
+from category import *

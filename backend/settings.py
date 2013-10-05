@@ -17,9 +17,11 @@ templates = {#open page templates
     "reset" : frame.format(content=open("templates/reset_password.html").read()),
     "thread" : frame.format(content=open("templates/thread.html").read()),
     "new_thread" : frame.format(content=open("templates/new_thread.html").read()),
+    
              
     #open non-page templates - i.e. those not wrapped in the frame
     "login_link" : open("templates/login_link.html").read(),
     "logout_link" : open("templates/logout_link.html").read(),
     "thread_link" : open("templates/thread_link.html").read(),
-    "post" : open("templates/post.html").read()}
+    "post" : open("templates/post.html").read(),
+    "category" : open("templates/category.html").read()}

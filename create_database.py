@@ -31,7 +31,9 @@ CREATE TABLE threads (
     thread_id INTEGER PRIMARY KEY,
     category_id INTEGER,
     title TEXT,
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+    op_id INTEGER,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id),
+    FOREIGN KEY (op_id) REFERENCES users(user_id)
 );
     
 
