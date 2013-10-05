@@ -1,7 +1,27 @@
+from collections import defaultdict
+from Cookie import SimpleCookie
+from hashlib import sha512
 
 from mail import *
 from settings import *
 from database import *
+
+def is_login(environ):
+   try:
+      c = SimpleCookie(environ.get("HTTP_COOKIE",""))
+      user_id = c["USERID"].value
+      password_hash = c["PASSHASH"].value
+
+      user = database.execute("SELECT * FROM users WHERE user_id = ?", (user_id,)).fetchone()
+      
+      if not user or user['pass_hash'] != password_hash:
+         return False
+  
+      return (user_id, user["username"])
+
+   except KeyError:
+      return False
+
 
 def login_post(request):
       username = request.options.get("username", [""])[0]
