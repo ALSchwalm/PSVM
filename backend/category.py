@@ -8,7 +8,7 @@ def compose_category(category_id):
     q = database.execute("""
 
     SELECT DISTINCT threads.thread_id, threads.title, categories.name
-    FROM threads INNER JOIN categories
+    FROM categories LEFT OUTER JOIN threads
     ON threads.category_id = categories.category_id
     WHERE categories.category_id = ?
 
@@ -23,7 +23,10 @@ def compose_category(category_id):
     for thread in threads:
         thread_id = thread["thread_id"]
         title = thread["title"]
-        thread_names += templates["thread_link"].format(thread_id=thread_id, title=title)
+        if thread_id:
+            thread_names += templates["thread_link"].format(thread_id=thread_id, title=title)
+        else:
+            thread_names += "None"
         thread_names += "<br>"
 
     page = templates["category"].format(

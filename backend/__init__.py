@@ -11,3 +11,4 @@ from login import *
 from post import *
 from thread import *
 from category import *
+from user import *

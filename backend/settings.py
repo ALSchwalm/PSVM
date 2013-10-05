@@ -17,6 +17,7 @@ templates = {#open page templates
     "reset" : frame.format(content=open("templates/reset_password.html").read()),
     "thread" : frame.format(content=open("templates/thread.html").read()),
     "new_thread" : frame.format(content=open("templates/new_thread.html").read()),
+    "profile" : frame.format(content=open("templates/profile.html").read()),
     
              
     #open non-page templates - i.e. those not wrapped in the frame

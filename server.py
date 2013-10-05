@@ -51,6 +51,7 @@ urls = [
    (r'^/thread\.html(\?.*|$)', thread),
    (r'^/new_thread$', thread_post),
    (r'^/new_thread\.html(\?.*|$)', new_thread),
+   (r'^/profile\.html(\?.*|$)', profile),
    (r'^$', redirect_index),
    (r'^/$', redirect_index),
    (r'^/logout$', logout),
