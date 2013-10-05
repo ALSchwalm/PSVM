@@ -5,7 +5,7 @@ from wsgiref.simple_server import make_server
 from backend import *
 
 def index(request):
-   page = templates["index"].format(posts = compose_posts() or 'None',
+   page = templates["index"].format(threads=compose_threads("1") or 'None',
                                     login_link=templates["login_link"] if not is_login(request.environ) 
                                     else templates["logout_link"].format(username=is_login(request.environ)[1]))
    
@@ -36,6 +36,9 @@ urls = [
    (r'^/execute/\d+', execute),
    (r'^/login\.html(\?.*|$)', login),
    (r'^/index\.html(\?.*|$)', index),
+   (r'^/thread\.html(\?.*|$)', thread),
+   (r'^/new_thread$', thread_post),
+   (r'^/new_thread\.html(\?.*|$)', new_thread),
    (r'^$', redirect_index),
    (r'^/$', redirect_index),
    (r'^/logout$', logout),

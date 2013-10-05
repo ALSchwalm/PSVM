@@ -9,14 +9,17 @@ parsed_MAIN_URL = urlparse(URL)
 frame = open("templates/frame.html").read()
 
 templates = {#open page templates
-             "404" : frame.format(content=open("templates/404.html").read()),
-             "index" : frame.format(content=open("templates/index.html").read()),
-             "login" : frame.format(content=open("templates/login.html").read()),
-             "register" : frame.format(content=open("templates/register.html").read()),
-             "forgot" : frame.format(content=open("templates/forgot.html").read()),
-             "reset" : frame.format(content=open("templates/reset_password.html").read()),
+    "404" : frame.format(content=open("templates/404.html").read()),
+    "index" : frame.format(content=open("templates/index.html").read()),
+    "login" : frame.format(content=open("templates/login.html").read()),
+    "register" : frame.format(content=open("templates/register.html").read()),
+    "forgot" : frame.format(content=open("templates/forgot.html").read()),
+    "reset" : frame.format(content=open("templates/reset_password.html").read()),
+    "thread" : frame.format(content=open("templates/thread.html").read()),
+    "new_thread" : frame.format(content=open("templates/new_thread.html").read()),
              
-             #open non-page templates - i.e. those not wrapped in the frame
-             "login_link" : open("templates/login_link.html").read(),
-             "logout_link" : open("templates/logout_link.html").read(),
-             "post" : open("templates/post.html").read()}
+    #open non-page templates - i.e. those not wrapped in the frame
+    "login_link" : open("templates/login_link.html").read(),
+    "logout_link" : open("templates/logout_link.html").read(),
+    "thread_link" : open("templates/thread_link.html").read(),
+    "post" : open("templates/post.html").read()}
