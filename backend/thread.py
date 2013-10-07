@@ -35,7 +35,8 @@ def thread(request):
     page = templates["thread"].format(thread_id=thread_id,
                                       posts=compose_posts(thread_id),
                                       category_id=q["category_id"],
-                                      category_name=q["name"])
+                                      category_name=q["name"],
+                                      thread_title=q["title"])
 
     return request.default_response(page)
 
