@@ -32,7 +32,7 @@ CREATE TABLE categories (
 CREATE TABLE threads (
     thread_id INTEGER PRIMARY KEY,
     category_id INTEGER,
-    title TEXT,
+    title TEXT NOT NULL,
     op_id INTEGER,
     FOREIGN KEY (category_id) REFERENCES categories(category_id),
     FOREIGN KEY (op_id) REFERENCES users(user_id)
@@ -51,7 +51,7 @@ CREATE TABLE comments (
 
 CREATE TABLE code_samples (
     sample_id INTEGER PRIMARY KEY,
-    language TEXT,
+    language TEXT NOT NULL,
     raw TEXT,
     body TEXT
 );

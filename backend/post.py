@@ -20,7 +20,8 @@ def compose_posts(thread_id):
 
    """, (thread_id,)).fetchall()
    return "".join([templates["post"].format(username=post['username'],
-                                            content=post['body']) for post in posts])      
+                                            content=post['body'],
+                                            post_id=post['comment_id']) for post in posts])
                     
 def new_post(request):
     user = is_login(request.environ)
@@ -38,3 +39,27 @@ def new_post(request):
     else:
        return request.redirect_response("/login.html?prompt=restricted")
 
+def edit_post(request):
+    user = is_login(request.environ)
+
+    comment_id = request.page_name.split("/")[-1]
+
+    q = database.execute("""
+
+    SELECT user_id FROM comments WHERE comment_id = ?
+
+    """, (comment_id,)).fetchone()
+
+    #TODO check for admin edits
+    if not q or not user or str(q["user_id"]) != user[0]:
+        return request.redirect_response("404.html")
+
+    edited_post = request.options.get("new_content", [""])[0]
+
+    q = database.execute("""
+
+    UPDATE comments SET body = ?, raw = ? WHERE comment_id = ? 
+
+    """, (parse_markup(escape(edited_post)), edited_post, comment_id))
+    
+    return request.redirect_response(request.environ["HTTP_REFERER"])

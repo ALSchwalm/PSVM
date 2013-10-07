@@ -26,7 +26,7 @@ class Request(object):
         
         #Determine MIME type
         mime = guess_type(self.page_name)[0] or "text/html" #default to text/html
-    
+
         response_headers = [('Content-Type', mime),
                             ('Content-Length', str(len(page)))]
 

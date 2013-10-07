@@ -29,11 +29,14 @@ def default(request):
     page = open(request.page_name[1:], 'rb').read()
     return request.default_response(page)
 
-def not_found(request):
+def error_404(request):
     page = templates["404"]
     return request.response('404 NOT FOUND', [('Content-Type', 'text/html'),
                                               ('Content-Length', str(len(page)))],
                             page)
+       
+def not_found(request):
+   return request.redirect_response("404.html")
 
 def favicon(request):
     return request.default_response("")
@@ -59,7 +62,9 @@ urls = [
    (r'^/$', redirect_index),
    (r'^/logout$', logout),
    (r'^/new_post$', new_post),
+   (r'^/edit/\d+', edit_post),
    (r'^/favicon\.ico$', favicon),
+   (r'^/404\.html$', error_404),
     
    (r'(\.js|\.css|\.jpg|\.png)$', default),
     
