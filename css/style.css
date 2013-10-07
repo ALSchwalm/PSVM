@@ -35,6 +35,7 @@ body {
     left: 120px;
     width: 85%;
     overflow: auto;
+    min-height:50px;
 }
 
 .clear {

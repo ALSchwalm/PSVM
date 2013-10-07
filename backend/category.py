@@ -51,7 +51,7 @@ def category(request):
     if not q:
         return request.redirect_response("/404.html")
 
-    page = frame.format(content=compose_category(category_id))
+    page = templates["category_page"].format(category=compose_category(category_id))
 
     return request.default_response(page)
     

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from string import Formatter
 import sqlite3
 import hashlib
