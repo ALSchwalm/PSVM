@@ -3,18 +3,19 @@
 
 body {
     padding:20px;
-    font:15px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font:1.25em Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
     color:#222;
     font-weight:300;
-    width:800px;
+    width:90%;
     margin:0 auto;
     line-height: 1.2em;
+	background-color:#ededf2;
 }
 
 .post {
-    border: dotted 1px black;
+    border: ridge 4px #48485a;
     margin: 5px;
-    height: auto;
+    
     position:relative;
     display: block;
 }
@@ -48,3 +49,8 @@ body {
     border: none;
     cursor: pointer;
 }
+
+
+
+
+

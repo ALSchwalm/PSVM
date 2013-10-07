@@ -1,38 +1,42 @@
-body {
-		background-color: #006666;
-	}
+
+
 
 	.menubox{
-		position:absolute;
+		position:inherit;
 		
 		display:block;
-		width:99%;
-		height: 200px;
+ 		width:99%;
+		height: 200px; 
 		background-color:#333;
 	}
 	.logo{
+		position:inherit;
 		float:left;
-		width:15%;
+		
+ 		height:80%;
 	}
 	.nav{
+		position:inherit;
 		float:right;
 		clear:both;
-		width:100%;
+ 		width:100%; 
 		
 		background-color:#334;
 	}
 	.nav ul{
+		position:inherit;
 		float:right;
 		margin-right:10%;
 	}
 	.nav ul li{
 		font-family:georgia, serif;
 		font-size:1.25em;
+		color:#a6c2d9;
 		list-style:none;
 		margin-right: 10px;
 		float:left;
 	}
 	.nav ul li a{
-		color:black;
+		color:#a6c2d9;
 		text-decoration:none;
 	}
