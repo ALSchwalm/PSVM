@@ -3,6 +3,6 @@ var str = document.URL.substring(ind);
 console.log(str);
 if (str == "?prompt=success"){
     setTimeout(function() {
-    document.location = "/login.html"; } , 500);
+    document.location = "/login.html"; } , 2000);
     
 }
