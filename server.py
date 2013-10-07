@@ -35,6 +35,9 @@ def not_found(request):
                                               ('Content-Length', str(len(page)))],
                             page)
 
+def favicon(request):
+    return request.default_response("")
+
 urls = [
    (r'^/verify/[0-9a-f]{128}$', verify),
    (r'^/forgot\.html(\?.*|$)', forgot),
@@ -56,6 +59,7 @@ urls = [
    (r'^/$', redirect_index),
    (r'^/logout$', logout),
    (r'^/new_post$', new_post),
+   (r'^/favicon\.ico$', favicon),
     
    (r'(\.js|\.css|\.jpg|\.png)$', default),
     
