@@ -19,6 +19,7 @@ templates = {#open page templates
     "new_thread" : frame.format(content=open("templates/new_thread.html").read()),
     "profile" : frame.format(content=open("templates/profile.html").read()),
     "category_page" : frame.format(content=open("templates/category_page.html").read()),
+    "messages" : frame.format(content=open("templates/messages.html").read()),
     
              
     #open non-page templates - i.e. those not wrapped in the frame

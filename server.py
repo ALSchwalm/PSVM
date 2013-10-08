@@ -58,6 +58,8 @@ urls = [
    (r'^/new_thread$', thread_post),
    (r'^/new_thread\.html(\?.*|$)', new_thread),
    (r'^/profile\.html(\?.*|$)', profile),
+   (r'^/messages\.html(\?.*|$)', messages),
+   (r'^/message$', message_post),
    (r'^$', redirect_index),
    (r'^/$', redirect_index),
    (r'^/logout$', logout),

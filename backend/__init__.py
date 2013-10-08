@@ -12,3 +12,4 @@ from post import *
 from thread import *
 from category import *
 from user import *
+from message import *

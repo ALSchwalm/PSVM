@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS code_samples;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS threads;
+DROP TABLE IF EXISTS messages;
 
 CREATE TABLE users (
     user_id INTEGER PRIMARY KEY, 
@@ -54,6 +55,15 @@ CREATE TABLE code_samples (
     language TEXT NOT NULL,
     raw TEXT,
     body TEXT
+);
+
+CREATE TABLE messages (
+    message_id INTEGER PRIMARY KEY,
+    body TEXT,
+    from_id INTEGER,
+    to_id INTEGER,
+    FOREIGN KEY (from_id) REFERENCES users(user_id),
+    FOREIGN KEY (to_id) REFERENCES users(user_id)
 );
 
     ''')
