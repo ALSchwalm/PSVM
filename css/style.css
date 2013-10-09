@@ -7,9 +7,10 @@ body {
     color:#222;
     font-weight:300;
     width:90%;
+    min-width:1000px;
     margin:0 auto;
     line-height: 1.2em;
-	background-color:#ededf2;
+    background-color:white;
 }
 
 .post {

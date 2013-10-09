@@ -1,0 +1,19 @@
+
+.category{
+
+}
+
+.category_links{
+
+}
+
+.category_title{
+    font-weight:600;
+    border:1px solid;
+    border-radius:7px;
+}
+
+.thread_link{
+    padding-left:15px;
+    padding-top:10px;
+}
