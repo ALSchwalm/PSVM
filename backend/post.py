@@ -51,8 +51,8 @@ def new_post(request):
 def edit_post(request):
     user = is_login(request.environ)
 
-    comment_id = request.page_name.split("/")[-1]
-
+    comment_id = re.findall(r'/edit/post_(\d+)$', request.page_name)[0] 
+    
     q = database.execute("""
 
     SELECT user_id FROM comments WHERE comment_id = ?

@@ -60,7 +60,7 @@ urls = [
    (r'^/$', redirect_index),
    (r'^/logout$', logout),
    (r'^/new_post$', new_post),
-   (r'^/edit/\d+', edit_post),
+   (r'^/edit/post_\d+', edit_post),
    (r'^/favicon\.ico$', favicon),
     
    (r'(\.js|\.css|\.jpg|\.png)$', default),
