@@ -26,5 +26,6 @@ templates = {#open page templates
     "login_link" : open("templates/login_link.html").read(),
     "logout_link" : open("templates/logout_link.html").read(),
     "thread_link" : open("templates/thread_link.html").read(),
+    "message_link" : open("templates/message_link.html").read(),
     "post" : open("templates/post.html").read(),
     "category" : open("templates/category.html").read()}

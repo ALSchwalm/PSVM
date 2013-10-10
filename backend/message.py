@@ -25,12 +25,16 @@ def compose_messages(user_id):
     
     """, (user_id,)).fetchall()
 
+    messages_text = ""
     if q:
-        #TODO create message template
-        return "<br>".join(["From: " + str(message["username"]) + " - " + message["body"] for message in q])
+        for message in q:
+            messages_text += templates["message_link"].format(
+                username=message["username"],
+                body=message["body"])
+            messages_text += "<br/>"
+        return messages_text
     else:
         return "None"
-
 
 def message_post(request):
     user = is_login(request.environ)
@@ -57,7 +61,7 @@ def message_post(request):
 
     INSERT INTO messages VALUES(NULL, ?, ?, ?)
 
-    """, (body, from_id, to_id))
+    """, (escape(body), from_id, to_id))
     print "Added {}, {}, {}".format(body, from_id, to_id)
     
     #TODO redirect to correct place
