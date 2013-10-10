@@ -32,9 +32,6 @@ def error_404(request):
     return request.response('404 NOT FOUND', [('Content-Type', 'text/html'),
                                               ('Content-Length', str(len(page)))],
                             page)
-       
-def not_found(request):
-   return request.redirect_response("404.html")
 
 def favicon(request):
     return request.default_response("")
@@ -48,6 +45,7 @@ urls = [
    (r'^/forgot/[0-9a-f]{128}$', reset),
    (r'^/register\.html(\?.*|$)', register),
    (r'^/register$', register_post),
+   (r'^/raw/\d+', get_raw),
    (r'^/execute/\d+', execute),
    (r'^/category\.html(\?.*|$)', category),
    (r'^/login\.html(\?.*|$)', login),
@@ -64,12 +62,11 @@ urls = [
    (r'^/new_post$', new_post),
    (r'^/edit/\d+', edit_post),
    (r'^/favicon\.ico$', favicon),
-   (r'^/404\.html$', error_404),
     
    (r'(\.js|\.css|\.jpg|\.png)$', default),
     
    #Anything else should 404
-   (r'.*', not_found)
+   (r'.*', error_404)
 ]
 
 def application(environ, start_response):
@@ -85,7 +82,7 @@ def application(environ, start_response):
            break
     
    except IOError:
-      response_body = not_found(r)
+      response_body = error_404(r)
       
    return [response_body]
 

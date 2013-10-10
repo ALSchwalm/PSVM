@@ -72,3 +72,17 @@ def edit_post(request):
     """, (parse_markup(escape(edited_post)), edited_post, comment_id))
     
     return request.redirect_response(request.environ["HTTP_REFERER"])
+
+def get_raw(request):
+    comment_id = request.page_name.split("/")[-1]
+    
+    q = database.execute("""
+
+    SELECT raw FROM comments WHERE comment_id = ?
+
+    """, (comment_id,)).fetchone()
+
+    if not q:
+        return request.default_response("")
+    else:
+        return request.default_response(str(q["raw"]))

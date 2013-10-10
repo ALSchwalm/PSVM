@@ -24,7 +24,7 @@ class Request(object):
 
     def default_response(self, page):
         user = is_login(self.environ)
-        
+
         if user:
             page = re.sub(r'(<ul id="title_links">.*?</ul>)',
                           r'''
