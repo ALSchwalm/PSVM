@@ -16,9 +16,7 @@ def index(request):
       categories_text += compose_category(category["category_id"])
       categories_text += "<br>"
    
-   page = templates["index"].format(categories=categories_text or 'None',
-                                    login_link=templates["login_link"] if not is_login(request.environ) 
-                                    else templates["logout_link"].format(username=is_login(request.environ)[1]))
+   page = templates["index"].format(categories=categories_text or 'None')
    
    return request.default_response(page)
 

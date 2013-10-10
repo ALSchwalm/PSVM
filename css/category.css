@@ -1,6 +1,9 @@
 
 .category{
-
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    background-color:#cadae8;
+    padding: 10px;
 }
 
 .category_links{

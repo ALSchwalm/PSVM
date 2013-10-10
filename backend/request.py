@@ -1,6 +1,7 @@
 from cgi import parse_qs, escape
 from mimetypes import guess_type
 from settings import *
+from login import *
 
 class Request(object):
     def __init__(self, environ, start_response):
@@ -22,6 +23,21 @@ class Request(object):
         
 
     def default_response(self, page):
+        user = is_login(self.environ)
+        
+        if user:
+            page = re.sub(r'(<ul id="title_links">.*?</ul>)',
+                          r'''
+                          <ul id="title_links">
+                          <li><a href="index.html">Home</a></li>
+                          <li><a href="/profile.html?username={username}">{username}</a></li>
+                          <li><a href="javascript:logout()">Logout</a></li>
+                          </ul>'''.format(
+                              username=user[1]),
+                          page,
+                          flags=re.MULTILINE | re.DOTALL)
+            
+        
         status = '200 OK'
         
         #Determine MIME type
