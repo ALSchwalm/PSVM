@@ -21,6 +21,11 @@
     top: 100px;
 }
 
+.nav{
+	float:right;
+	width:50%;
+}
+
 .nav ul{
     float:right;
     margin-right:10%;
