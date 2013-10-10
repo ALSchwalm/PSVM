@@ -74,7 +74,7 @@ def edit_post(request):
     return request.redirect_response(request.environ["HTTP_REFERER"])
 
 def get_raw(request):
-    comment_id = request.page_name.split("/")[-1]
+    comment_id = re.findall(r'/raw/post_(\d+)$', request.page_name)[0]
     
     q = database.execute("""
 

@@ -33,7 +33,7 @@ def compose_category(category_id):
                 title=title,
                 username=username)
         else:
-            thread_names += "None"
+            thread_names += '<span class="thread_link">None</span>'
         thread_names += "<br>"
 
     page = templates["category"].format(

@@ -45,7 +45,7 @@ urls = [
    (r'^/forgot/[0-9a-f]{128}$', reset),
    (r'^/register\.html(\?.*|$)', register),
    (r'^/register$', register_post),
-   (r'^/raw/\d+', get_raw),
+   (r'^/raw/post_\d+', get_raw),
    (r'^/execute/\d+', execute),
    (r'^/category\.html(\?.*|$)', category),
    (r'^/login\.html(\?.*|$)', login),
