@@ -19,7 +19,8 @@ def new_thread(request):
     
 def thread(request):
     thread_id = request.query_string.get("thread_id", [""])[0]
-
+    user = is_login(request.environ)
+    
     q = database.execute("""
 
     SELECT * FROM threads, categories WHERE
@@ -31,9 +32,11 @@ def thread(request):
 
     if not q:
         return request.redirect_response("/404.html")
+    if not user:
+        user = (-1)
     
     page = templates["thread"].format(thread_id=thread_id,
-                                      posts=compose_posts(thread_id),
+                                      posts=compose_posts(thread_id, user[0]),
                                       category_id=q["category_id"],
                                       category_name=q["name"],
                                       thread_title=q["title"])

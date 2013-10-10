@@ -11,17 +11,26 @@ def add_post(thread_id, user_id, post, unescaped):
                      (thread_id, user_id, post, unescaped))
 
 #TODO add range
-def compose_posts(thread_id):
+def compose_posts(thread_id, user_id):
 
-   posts = database.execute("""
+    posts = database.execute("""
 
-   SELECT * FROM users, comments
-   WHERE comments.user_id = users.user_id AND comments.thread_id = ?
+    SELECT * FROM users, comments
+    WHERE comments.user_id = users.user_id AND comments.thread_id = ?
 
-   """, (thread_id,)).fetchall()
-   return "".join([templates["post"].format(username=post['username'],
-                                            content=post['body'],
-                                            post_id=post['comment_id']) for post in posts])
+    """, (thread_id,)).fetchall()
+
+
+    post_string = ""
+    for post in posts:
+        edit_button = ""
+        if str(post["user_id"]) == str(user_id):
+            edit_button = '<a href="javascript:void(0)">Edit</a>'
+        post_string += templates["post"].format(username=post['username'],
+                                                content=post['body'],
+                                                post_id=post['comment_id'],
+                                                edit=edit_button)
+    return post_string
                     
 def new_post(request):
     user = is_login(request.environ)

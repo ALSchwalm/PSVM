@@ -43,3 +43,8 @@ body {
     clear: both;
 }
 
+.edit_button {
+    float:right;
+    margin-top:-25px;
+    margin-right:5px;
+}
