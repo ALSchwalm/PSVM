@@ -22,6 +22,7 @@ CREATE TABLE users (
     username TEXT NOT NULL COLLATE NOCASE, 
     pass_hash TEXT NOT NULL,
     email TEXT NOT NULL,
+    admin INTEGER NOT NULL DEFAULT 0,
     verified INTEGER NOT NULL DEFAULT 0
 );
 
@@ -78,8 +79,8 @@ INSERT INTO categories VALUES( NULL, 'Haskell');
 """)
 
 
-user = ('user', hashlib.sha512("password").hexdigest(), "invalid@gmail.com", True)
-c.execute('''INSERT INTO users VALUES(NULL, ?, ?, ?, ?)''', user)
+user = ('user', hashlib.sha512("password").hexdigest(), "invalid@gmail.com", True, True)
+c.execute('''INSERT INTO users VALUES(NULL, ?, ?, ?, ?, ?)''', user)
 
 
 # Save (commit) the changes

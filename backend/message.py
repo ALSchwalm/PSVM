@@ -11,7 +11,7 @@ def messages(request):
         return request.redirect_response("/login.html?prompt=restricted")
     
     page = templates["messages"].format(
-        messages=compose_messages(user[0]))
+        messages=compose_messages(user.user_id))
 
     return request.default_response(page)
 
@@ -43,7 +43,7 @@ def message_post(request):
         return request.redirect_response("404.html")
 
     body = request.options.get("message_body", [""])[0]
-    from_id = user[0]
+    from_id = user.user_id
     to_username = request.options.get("to_username", [""])[0]
 
     q = database.execute("""

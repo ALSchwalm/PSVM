@@ -11,7 +11,7 @@ def add_post(thread_id, user_id, post, unescaped):
                      (thread_id, user_id, post, unescaped))
 
 #TODO add range
-def compose_posts(thread_id, user_id):
+def compose_posts(thread_id, user):
 
     posts = database.execute("""
 
@@ -24,7 +24,7 @@ def compose_posts(thread_id, user_id):
     post_string = ""
     for post in posts:
         edit_button = ""
-        if str(post["user_id"]) == str(user_id):
+        if user and (str(post["user_id"]) == str(user.user_id) or user.admin):
             edit_button = '<a href="javascript:void(0)">Edit</a>'
         post_string += templates["post"].format(username=post['username'],
                                                 content=post['body'],
@@ -39,11 +39,10 @@ def new_post(request):
         thread_id =request.options.get("thread_id", [""])[0] 
         
         # Always escape user input to avoid script injection
-        #TODO store the unmodified version to allow edits
         unescaped = new_post
         new_post = parse_markup(escape(new_post))
 
-        add_post(thread_id, user[0], new_post, unescaped)
+        add_post(thread_id, user.user_id, new_post, unescaped)
         return request.redirect_response("/thread.html?thread_id="+thread_id)
     else:
        return request.redirect_response("/login.html?prompt=restricted")
@@ -59,8 +58,7 @@ def edit_post(request):
 
     """, (comment_id,)).fetchone()
 
-    #TODO check for admin edits
-    if not q or not user or str(q["user_id"]) != user[0]:
+    if not q or not user or (str(q["user_id"]) != user.user_id and not user.admin):
         return request.redirect_response("404.html")
 
     edited_post = request.options.get("new_content", [""])[0]

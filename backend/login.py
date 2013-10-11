@@ -1,10 +1,12 @@
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from Cookie import SimpleCookie
 from hashlib import sha512
 
 from mail import *
 from settings import *
 from database import *
+
+login_info = namedtuple('LoginInfo', ['user_id', 'username', 'admin'])
 
 def is_login(environ):
    try:
@@ -17,7 +19,7 @@ def is_login(environ):
       if not user or user['pass_hash'] != password_hash:
          return False
   
-      return (user_id, user["username"])
+      return login_info(user_id, user["username"], user["admin"])
 
    except KeyError:
       return False
@@ -59,4 +61,3 @@ def logout(request):
    return request.response("301 REDIRECT", [('Location', URL + "/index.html"),
                                             ("Set-Cookie", "USERID=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;"),
                                             ("Set-Cookie", "PASSHASH=; Expires=Thu, 01-Jan-1970 00:00:10 GMT;")])
-

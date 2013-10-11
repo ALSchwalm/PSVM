@@ -32,11 +32,9 @@ def thread(request):
 
     if not q:
         return request.redirect_response("/404.html")
-    if not user:
-        user = (-1)
     
     page = templates["thread"].format(thread_id=thread_id,
-                                      posts=compose_posts(thread_id, user[0]),
+                                      posts=compose_posts(thread_id, user),
                                       category_id=q["category_id"],
                                       category_name=q["name"],
                                       thread_title=q["title"])
@@ -54,17 +52,16 @@ def thread_post(request):
     elif not request.is_post or not title:
         return request.redirect_response("/index.html")
     
-    #TODO take category, etc in request
     q = database.execute("""
 
     INSERT INTO threads VALUES(NULL, ?, ?, ?)
 
-    """, (category, title, user[0]))
+    """, (category, title, user.user_id))
 
     thread_id = database.lastrowid
     unescaped = new_post
     new_post = parse_markup(escape(new_post))
 
-    add_post(thread_id, user[0], new_post, unescaped)
+    add_post(thread_id, user.user_id, new_post, unescaped)
     
     return request.redirect_response("/thread.html?thread_id="+str(thread_id))
