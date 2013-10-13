@@ -74,7 +74,7 @@ c.executescript("""
 
 INSERT INTO categories VALUES( NULL, 'C++');
 INSERT INTO categories VALUES( NULL, 'Python');
-INSERT INTO categories VALUES( NULL, 'Haskell');
+INSERT INTO categories VALUES( NULL, 'General');
 
 """)
 
