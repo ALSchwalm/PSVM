@@ -8,11 +8,14 @@ def new_thread(request):
     q = database.execute("SELECT category_id, name FROM categories")
     q = q.fetchall()
 
+    category_id = str(request.query_string.get("category_id", ["-1"])[0])
+
     links = ""
     for category in q:
-        links+='<option value="{id}"> {name} </option>'.format(
+        links+='<option value="{id}" {selected}> {name} </option>'.format(
             id=category["category_id"],
-            name=category["name"])
+            name=category["name"],
+            selected="selected" if str(category["category_id"]) == category_id else "")
     
     page = templates["new_thread"].format(category_options=links)
     return request.default_response(page)

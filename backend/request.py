@@ -34,7 +34,7 @@ class Request(object):
                           <li><a href="/profile.html?username={username}">{username}</a></li>
                           <li><a href="javascript:void(0)" onclick="$(this).closest('form').submit();">Logout</a></li>
                           </ul></form>'''.format(
-                              username=user[1]),
+                              username=user.username),
                           page,
                           flags=re.MULTILINE | re.DOTALL)
             

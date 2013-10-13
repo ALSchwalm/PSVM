@@ -17,7 +17,12 @@ def parse_markup(comment_body):
                                      group,
                                      flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)[0]
 
-            database.execute("INSERT INTO code_samples VALUES (NULL, ?, ?, ?)", (language, unescape(sample_body), sample_body))
+            database.execute('''
+
+            INSERT INTO code_samples VALUES (NULL, ?, ?, ?)
+
+            ''', (language, unescape(sample_body), sample_body))
+            
             id = database.lastrowid
             
             comment_body = re.sub(r"\[code\]\({lang}\)(.*?)(?:\n)?\[\\code\]".format(lang=language), 
@@ -32,4 +37,5 @@ def parse_markup(comment_body):
                           comment_body,
                           flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
     comment_body = re.sub(r"\n", "</br>", comment_body)
+    comment_body += '''<a href="javascript:void(0)" class="execute_link">Execute</a>'''
     return comment_body
