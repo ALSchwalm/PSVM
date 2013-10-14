@@ -1,0 +1,47 @@
+\documentclass[12pt]{scrartcl}
+\usepackage{graphicx}
+
+\begin{document}
+
+\input{./title.tex}
+
+\newpage\null\thispagestyle{empty}\newpage
+
+\tableofcontents
+
+\newpage\null\thispagestyle{empty}\newpage
+
+\section{Detailed Class Diagrams}
+\subsection{Data Modules}
+\subsubsection{Category}
+
+\begin{description}
+\item [compose category(categoryid)] Get the threads in a category as formatted HTML
+\item [category(request)] Handle the GET request for the category.html page
+\end{description}
+
+\subsubsection{Database}
+\begin{description}
+\item [database] Member which allows execution of database queries 
+\end{description}
+
+\subsubsection{Execute}
+\begin{description}
+\item [EXECUTE\_URL] Constant value which is the url code execution is sent to for completion
+\item [LANGUAGE\_MAP ] Constant which maps the names of languages used by the markup to the strings required by the EXECUTE\_URL
+\item[execute(request)] Handles GET to the execute/ URL. The function queries the EXECUTE\_URL API with a json object and returns an unformatted string as the result
+\end{description}
+
+
+\subsubsection{Thread}
+\begin{description}
+\item [new\_thread(request)] Presents the user with the new thread page, allowing them to create a thread under a chosen category
+\item [thread(request)] Generates a thread’s page, given the thread\_id number. If the thread does not exist, returns a 404 error
+\item [thread post(request)] Allows the user to create a new post on a thread, prompts to login if the user is not
+\end{description}
+
+\subsubsection{User}
+\begin{description}
+\item [profile(request)] Generates the user’s profile page, or returns 404 if the user does not exist
+\end{description}
+\end{document}
