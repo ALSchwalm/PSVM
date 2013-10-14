@@ -31,6 +31,7 @@ class Request(object):
                           <form action="/logout" method="post">
                           <ul id="title_links">
                           <li><a href="/index.html">Home</a></li>
+                          <li><a href="/search.html">Search</a></li>
                           <li><a href="/profile.html?username={username}">{username}</a></li>
                           <li><a href="javascript:void(0)" onclick="$(this).closest('form').submit();">Logout</a></li>
                           </ul></form>'''.format(

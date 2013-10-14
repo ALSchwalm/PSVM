@@ -24,7 +24,7 @@ CREATE TABLE users (
     email TEXT NOT NULL,
     admin INTEGER NOT NULL DEFAULT 0,
     verified INTEGER NOT NULL DEFAULT 0,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    timestamp DATETIME DEFAULT (datetime('now','localtime'))
 );
 
 CREATE TABLE categories (
@@ -37,7 +37,7 @@ CREATE TABLE threads (
     category_id INTEGER,
     title TEXT NOT NULL,
     op_id INTEGER,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    timestamp DATETIME DEFAULT (datetime('now','localtime')),
     FOREIGN KEY (category_id) REFERENCES categories(category_id),
     FOREIGN KEY (op_id) REFERENCES users(user_id)
 );
@@ -49,7 +49,7 @@ CREATE TABLE comments (
     user_id INTEGER NOT NULL,
     body TEXT,
     raw TEXT,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    timestamp DATETIME DEFAULT (datetime('now','localtime')),
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (thread_id) REFERENCES threads(thread_id)
 );
@@ -66,7 +66,7 @@ CREATE TABLE messages (
     body TEXT,
     from_id INTEGER,
     to_id INTEGER,
-    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+    timestamp DATETIME DEFAULT (datetime('now','localtime')),
     FOREIGN KEY (from_id) REFERENCES users(user_id),
     FOREIGN KEY (to_id) REFERENCES users(user_id)
 );

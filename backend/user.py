@@ -1,12 +1,17 @@
 from settings import *
 from database import *
-from post import *
 from login import *
 
 def profile(request):
     username = request.query_string.get("username", [""])[0]
 
-    q = database.execute("SELECT * FROM users WHERE username = ?", (username,))
+    q = database.execute("""
+
+    SELECT email, timestamp FROM users
+    WHERE username = ?
+
+    """, (username,))
+    
     user = q.fetchone()
 
     if not user or not username:

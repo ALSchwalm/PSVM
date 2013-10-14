@@ -25,7 +25,8 @@ def search(request):
             content += templates["thread_link"].format(
                 thread_id=result["thread_id"],
                 title=result["title"],
-                username=result["username"])
+                username=result["username"],
+                timestamp=result["timestamp"])
             content += "<br>"
 
     page = templates["search"].format(results=content)

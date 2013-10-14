@@ -1,4 +1,5 @@
 
+from xml.sax.saxutils import escape, unescape
 from settings import *
 from database import *
 from mail import *
@@ -59,7 +60,8 @@ def message_post(request):
     
     database.execute("""
 
-    INSERT INTO messages VALUES(NULL, ?, ?, ?)
+    INSERT INTO messages(message_id, body, from_id, to_id)
+    VALUES(NULL, ?, ?, ?)
 
     """, (escape(body), from_id, to_id))
     
