@@ -1,4 +1,5 @@
 <link type="text/css" rel="stylesheet" href="/css/shCoreDefault.css"/>
+<link type="text/css" rel="stylesheet" href="/css/input.css"/>
 <script type="text/javascript" src="/js/tab.js"></script>
 <script type="text/javascript" src="/js/shCore.js"></script>
 <script type="text/javascript" src="/js/shBrushCpp.js"></script>
@@ -19,10 +20,10 @@ SyntaxHighlighter.all();
 
 <form method="post" action="new_post">
   <input type="hidden" name="thread_id" value="{thread_id}">
-  <p>
+  <div class="post_input">
     <textarea rows="5" cols="45" name="new_post" id="textbox"></textarea>
-  </p>
-  <p>
+    <br>
+    <a href="javascript:void(0)" class="markup_help">Formatting Help</a>
     <input type="submit" value="Submit">
-  </p>
+  </div>
 </form>

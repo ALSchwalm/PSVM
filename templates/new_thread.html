@@ -1,4 +1,5 @@
 <link type="text/css" rel="stylesheet" href="/css/shCoreDefault.css"/>
+<link type="text/css" rel="stylesheet" href="/css/input.css"/>
 <script type="text/javascript" src="/js/tab.js"></script>
 
 <form method="post" action="/new_thread">
@@ -8,6 +9,9 @@
     {category_options}
   </select>
   <br>
-  <textarea rows="5" cols="45" name="new_post" id="textbox"></textarea><br>
-  <input type="submit" value="Make Thread">
+  <div class="post_input">
+    <textarea rows="5" cols="45" name="new_post" id="textbox"></textarea><br>
+    <a href="javascript:void(0)" class="markup_help">Formatting Help</a>
+    <input type="submit" value="Make Thread">
+  </div>
 </form>
