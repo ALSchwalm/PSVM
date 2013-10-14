@@ -26,16 +26,17 @@ def parse_markup(comment_body):
             id = database.lastrowid
             
             comment_body = re.sub(r"\[code\]\({lang}\)(.*?)(?:\n)?\[\\code\]".format(lang=language), 
-                                  r'<div class="code_sample" value="{id}"><pre class="brush: {lang};">\1</pre></div>'.format(lang=language, id=id), 
+                                  r'''<div class="code_sample" value="{id}"><pre class="brush: {lang};">\1</pre><a href="javascript:void(0)" class="execute_link">Execute</a></div>'''.format(
+                                      lang=language,
+                                      id=id), 
                                   comment_body,
                                   count = 1,
                                   flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
-            
 
     comment_body = re.sub(r"\[link\]\((.*?)\)(.*?)\[\\link\]", 
                           r'<a href=\1>\2</a>', 
                           comment_body,
                           flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
     comment_body = re.sub(r"\n", "</br>", comment_body)
-    comment_body += '''<a href="javascript:void(0)" class="execute_link">Execute</a>'''
+
     return comment_body
