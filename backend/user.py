@@ -14,7 +14,8 @@ def profile(request):
     
     page = templates["profile"].format(
         username=username,
-        email=user["email"])
+        email=user["email"],
+        joined=user["timestamp"])
 
     return request.default_response(page)
     

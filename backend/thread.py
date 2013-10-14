@@ -40,7 +40,8 @@ def thread(request):
                                       posts=compose_posts(thread_id, user),
                                       category_id=q["category_id"],
                                       category_name=q["name"],
-                                      thread_title=q["title"])
+                                      thread_title=q["title"],
+                                      timestamp=q["timestamp"])
 
     return request.default_response(page)
 
@@ -57,7 +58,8 @@ def thread_post(request):
     
     q = database.execute("""
 
-    INSERT INTO threads VALUES(NULL, ?, ?, ?)
+    INSERT INTO threads(thread_id, category_id, title, op_id)
+    VALUES(NULL, ?, ?, ?)
 
     """, (category, title, user.user_id))
 

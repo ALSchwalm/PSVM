@@ -7,8 +7,12 @@ from markup import *
 def add_post(thread_id, user_id, post, unescaped):
     
     #TODO add check for locked threads / noexistant threads
-    database.execute("INSERT INTO comments VALUES(NULL, ?, ?, ?, ?)",
-                     (thread_id, user_id, post, unescaped))
+    database.execute("""
+
+    INSERT INTO comments(comment_id, thread_id, user_id, body, raw)
+    VALUES(NULL, ?, ?, ?, ?)
+
+    """, (thread_id, user_id, post, unescaped))
 
 #TODO add range
 def compose_posts(thread_id, user):

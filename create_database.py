@@ -7,9 +7,6 @@ import hashlib
 conn = sqlite3.connect('database.db')
 c = conn.cursor()
 
-q = c.execute("SELECT timestamp FROM users").fetchone()
-print q
-
 #Recreate tables from scratch
 c.executescript('''
 
@@ -40,6 +37,7 @@ CREATE TABLE threads (
     category_id INTEGER,
     title TEXT NOT NULL,
     op_id INTEGER,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(category_id),
     FOREIGN KEY (op_id) REFERENCES users(user_id)
 );
@@ -51,6 +49,7 @@ CREATE TABLE comments (
     user_id INTEGER NOT NULL,
     body TEXT,
     raw TEXT,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id),
     FOREIGN KEY (thread_id) REFERENCES threads(thread_id)
 );
@@ -67,6 +66,7 @@ CREATE TABLE messages (
     body TEXT,
     from_id INTEGER,
     to_id INTEGER,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (from_id) REFERENCES users(user_id),
     FOREIGN KEY (to_id) REFERENCES users(user_id)
 );
