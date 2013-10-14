@@ -20,6 +20,7 @@ templates = {#open page templates
     "profile" : frame.format(content=open("templates/profile.html").read()),
     "category_page" : frame.format(content=open("templates/category_page.html").read()),
     "messages" : frame.format(content=open("templates/messages.html").read()),
+    "search" : frame.format(content=open("templates/search.html").read()),
     
              
     #open non-page templates - i.e. those not wrapped in the frame

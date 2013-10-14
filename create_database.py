@@ -7,6 +7,9 @@ import hashlib
 conn = sqlite3.connect('database.db')
 c = conn.cursor()
 
+q = c.execute("SELECT timestamp FROM users").fetchone()
+print q
+
 #Recreate tables from scratch
 c.executescript('''
 
@@ -23,7 +26,8 @@ CREATE TABLE users (
     pass_hash TEXT NOT NULL,
     email TEXT NOT NULL,
     admin INTEGER NOT NULL DEFAULT 0,
-    verified INTEGER NOT NULL DEFAULT 0
+    verified INTEGER NOT NULL DEFAULT 0,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE categories (
@@ -80,7 +84,12 @@ INSERT INTO categories VALUES( NULL, 'General');
 
 
 user = ('user', hashlib.sha512("password").hexdigest(), "invalid@gmail.com", True, True)
-c.execute('''INSERT INTO users VALUES(NULL, ?, ?, ?, ?, ?)''', user)
+c.execute('''
+
+INSERT INTO users(user_id, username, pass_hash, email, admin, verified)
+VALUES(NULL, ?, ?, ?, ?, ?)
+
+''', user)
 
 
 # Save (commit) the changes

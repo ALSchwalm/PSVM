@@ -24,7 +24,12 @@ def register_post(request):
          if q:
             return request.redirect_response("/register.html?prompt=duplicate")
          else:
-            database.execute("INSERT INTO users VALUES (NULL, ?, ?, ?,0, 0)", (username, sha512(password).hexdigest(), email))
+            database.execute("""
+
+            INSERT INTO users(user_id, username, pass_hash, email)
+            VALUES (NULL, ?, ?, ?)
+
+            """, (username, sha512(password).hexdigest(), email))
             
             #FIXME This is possibly incorrect the "lastrowid" may not be the user_id
             send_confirmation(username, database.lastrowid, email)

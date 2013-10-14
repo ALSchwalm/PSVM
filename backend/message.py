@@ -62,7 +62,6 @@ def message_post(request):
     INSERT INTO messages VALUES(NULL, ?, ?, ?)
 
     """, (escape(body), from_id, to_id))
-    print "Added {}, {}, {}".format(body, from_id, to_id)
     
     #TODO redirect to correct place
     return request.redirect_response("index.html")

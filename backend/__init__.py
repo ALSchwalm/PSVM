@@ -13,3 +13,4 @@ from thread import *
 from category import *
 from user import *
 from message import *
+from search import *

@@ -56,6 +56,8 @@ urls = [
    (r'^/profile\.html(\?.*|$)', profile),
    (r'^/messages\.html(\?.*|$)', messages),
    (r'^/message$', message_post),
+   (r'^/search\.html(\?.*|$)', search),
+   (r'^/search$', search_post),
    (r'^$', redirect_index),
    (r'^/$', redirect_index),
    (r'^/logout$', logout),
