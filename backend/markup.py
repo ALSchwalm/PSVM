@@ -1,6 +1,6 @@
 import re
 
-from xml.sax.saxutils import escape, unescape
+from xml.sax.saxutils import unescape
 from database import *
 
 SUPPORTED_LANGUAGES = ("cpp", "python")
@@ -13,7 +13,7 @@ def parse_markup(comment_body):
                              flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
 
         for group in groups:
-            sample_body = re.findall(r"\[code\]\(.+?\)(.*?)\[\\code\]",
+            sample_body = re.findall(r"\[code\]\(.+?\)(?:\n)?(.*?)(?:\n)?\[\\code\]",
                                      group,
                                      flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)[0]
 
@@ -21,11 +21,11 @@ def parse_markup(comment_body):
 
             INSERT INTO code_samples VALUES (NULL, ?, ?, ?)
 
-            ''', (language, unescape(sample_body), sample_body))
+            ''', (language, unescape(sample_body.strip()), sample_body))
             
             id = database.lastrowid
             
-            comment_body = re.sub(r"\[code\]\({lang}\)(.*?)(?:\n)?\[\\code\]".format(lang=language), 
+            comment_body = re.sub(r"\[code\]\({lang}\)(?:\n)?(.*?)(?:\n)?\[\\code\]".format(lang=language), 
                                   r'''<div class="code_sample" value="{id}"><pre class="brush: {lang};">\1</pre><a href="javascript:void(0)" class="execute_link">Execute</a></div>'''.format(
                                       lang=language,
                                       id=id), 

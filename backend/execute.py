@@ -4,7 +4,7 @@ import re
 
 from database import *
 from collections import defaultdict
-from xml.sax.saxutils import escape, unescape
+from xml.sax.saxutils import escape
 
 EXECUTE_URL = 'http://codepad.org'
 
@@ -35,6 +35,7 @@ def execute(request):
     req = urllib2.Request(EXECUTE_URL, data)
     response = urllib2.urlopen(req)
     page = response.read()
+    
     output = re.findall(r'Output:.*<pre>\n(.*?)</pre>',
                         page,
                         re.MULTILINE | re.DOTALL)
@@ -44,4 +45,8 @@ def execute(request):
     else:
         return request.default_response("No output")        
     
-    return request.default_response(escape(output))
+    return request.default_response(parse_execute(output))
+
+def parse_execute(output):
+    output = re.sub(r"\n", "</br>", output)
+    return output
