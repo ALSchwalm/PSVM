@@ -1,3 +1,4 @@
+from xml.sax.saxutils import escape
 from mail import *
 from settings import *
 from database import *
