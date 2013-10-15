@@ -1,4 +1,4 @@
-$(document).delegate('#textbox', 'keydown', function(e) {
+$(document).delegate("textarea[id^='textbox']", 'keydown', function(e) {
   var keyCode = e.keyCode || e.which;
 
   if (keyCode == 9) {
