@@ -140,11 +140,26 @@
 \item [profile(request)] Generates the user’s profile page, or returns 404 if the user does not exist
 \end{description}
 
+\section{Sequence Diagrams}
+\subsection{Search}
+\includegraphics[keepaspectratio, scale=0.85]{sequence/search.png}
+
+\subsection{Reset Password}
+\includegraphics[keepaspectratio, scale=0.85]{sequence/reset.png}
+
+\subsection{Create Thread}
+\includegraphics[keepaspectratio, scale=0.85]{sequence/createthread.png}
+
+\subsection{Edit Post}
+\includegraphics[keepaspectratio, scale=0.9]{sequence/editpost.png}
+
+\newpage
+
 \section{Appendix A - Database Design}
 
 \textbf{users} \hfill \textbf{comments}\\*
 *user\_id \hfill *comment\_id\\*
-usernmae \hfill \#thread\_id\\*
+username \hfill \#thread\_id\\*
 pass\_hash \hfill body\\*
 email \hfill raw\\*
 admin \hfill timestamp\\*
@@ -162,7 +177,7 @@ name \hfill language\\*
 \#category\_id \hfill body\\*
 title \hfill \#from\_id\\*
 \#op\_id \hfill \#to\_id\\*
-timestampe \hfill timestamp\\*
+timestamp \hfill timestamp\\*
 
 \section{Appendix B - Tasks and Assignments}
 \begin{description}
