@@ -1,7 +1,7 @@
 
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
-body {
+#wrapper {
     padding:20px;
     font:1.25em Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
     color:#222;
