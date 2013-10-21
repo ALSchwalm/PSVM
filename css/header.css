@@ -3,7 +3,7 @@
 #titlebox{
     position:absolute;
     width:100%;
-    min-width:1030px;
+    min-width:1050px;
     font:1.25em Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
     color:#222;
     font-weight:300;
@@ -27,16 +27,17 @@
 
 .nav{
 	float:right;
-	width:35%;
+	width:40%;
 }
 
 .nav ul{
     float:right;
     margin-right:10%;
-    padding-top:1%;
+    padding-top:4%;
 }
 .nav ul li{
     color:#a6c2d9;
+    font-size:1.25em;
     list-style:none;
     margin-right: 10px;
     float:left;
