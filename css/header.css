@@ -1,8 +1,12 @@
-
+@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
 #titlebox{
     position:absolute;
     width:100%;
+    min-width:1030px;
+    font:1.25em Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color:#222;
+    font-weight:300;
     top: 0;
     left: 0;
     right: 0;
@@ -23,7 +27,7 @@
 
 .nav{
 	float:right;
-	width:50%;
+	width:35%;
 }
 
 .nav ul{
@@ -32,7 +36,6 @@
     padding-top:1%;
 }
 .nav ul li{
-    font-size:1.25em;
     color:#a6c2d9;
     list-style:none;
     margin-right: 10px;
