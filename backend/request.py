@@ -1,4 +1,4 @@
-from cgi import parse_qs, escape
+from cgi import parse_qs
 from mimetypes import guess_type
 from settings import *
 from login import *

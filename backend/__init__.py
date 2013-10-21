@@ -1,5 +1,5 @@
 
-from markup import parse_markup
+from markup import *
 from settings import *
 from database import *
 from mail import *

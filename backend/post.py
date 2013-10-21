@@ -1,4 +1,5 @@
 
+from xml.sax.saxutils import escape
 from settings import *
 from database import *
 from login import *

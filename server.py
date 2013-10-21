@@ -54,7 +54,8 @@ urls = [
    (r'^/new_thread$', thread_post),
    (r'^/new_thread\.html(\?.*|$)', new_thread),
    (r'^/profile\.html(\?.*|$)', profile),
-   (r'^/messages\.html(\?.*|$)', messages),
+   (r'^/messages\.html$', messages),
+   (r'^/messages\.html\?.*$', message_thread),
    (r'^/message$', message_post),
    (r'^/search\.html(\?.*|$)', search),
    (r'^/search$', search_post),
@@ -73,6 +74,7 @@ urls = [
 
 def application(environ, start_response):
    path = environ["PATH_INFO"]
+
    response_body = ""
    r = Request(environ, start_response)
    

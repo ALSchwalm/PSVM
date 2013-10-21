@@ -20,11 +20,13 @@ templates = {#open page templates
     "profile" : frame.format(content=open("templates/profile.html").read()),
     "category_page" : frame.format(content=open("templates/category_page.html").read()),
     "messages" : frame.format(content=open("templates/messages.html").read()),
+    "message_thread" : frame.format(content=open("templates/message_thread.html").read()),
     "search" : frame.format(content=open("templates/search.html").read()),
     
              
     #open non-page templates - i.e. those not wrapped in the frame
     "thread_link" : open("templates/thread_link.html").read(),
     "message_link" : open("templates/message_link.html").read(),
+    "full_message" : open("templates/full_message.html").read(),
     "post" : open("templates/post.html").read(),
     "category" : open("templates/category.html").read()}
