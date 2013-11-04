@@ -48,3 +48,11 @@
     margin-top:-25px;
     margin-right:5px;
 }
+
+td{
+    max-width: 300px;
+}
+
+#format_help{
+    visibility:hidden;
+}
