@@ -1,4 +1,8 @@
 
-<a href="thread.html?thread_id={thread_id}" class="thread_link">{title}</a>
-<a href="profile.html?username={username}" class="thread_op" >{username}</a>
-<span class="thread_timestamp">{timestamp}</span>
+<div class="thread">
+  <a href="thread.html?thread_id={thread_id}" class="thread_link">{title}</a>
+  <span class="thread_timestamp"> at {timestamp}</span>
+  <span class="thread_op">
+    by <a href="profile.html?username={username}">{username}</a>
+  </span>
+</div>

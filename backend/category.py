@@ -36,7 +36,6 @@ def compose_category(category_id):
                 timestamp=timestamp)
         else:
             thread_names += '<span class="thread_link">None</span>'
-        thread_names += "<br>"
 
     page = templates["category"].format(
         #FIXME

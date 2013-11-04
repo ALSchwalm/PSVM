@@ -27,9 +27,13 @@ def search(request):
                 title=result["title"],
                 username=result["username"],
                 timestamp=result["timestamp"])
-            content += "<br>"
 
-    page = templates["search"].format(results=content)
+    if content:
+        page = templates["search"].format(results=content)
+    elif query:
+        page = templates["search"].format(results="No results found")
+    else:
+        page = templates["search"].format(results="")
 
     return request.default_response(page)
 
