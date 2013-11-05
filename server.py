@@ -33,9 +33,6 @@ def error_404(request):
                                               ('Content-Length', str(len(page)))],
                             page)
 
-def favicon(request):
-    return request.default_response("")
-
 urls = [
    (r'^/verify/[0-9a-f]{128}$', verify),
    (r'^/forgot\.html(\?.*|$)', forgot),
@@ -64,9 +61,8 @@ urls = [
    (r'^/logout$', logout),
    (r'^/new_post$', new_post),
    (r'^/edit/post_\d+', edit_post),
-   (r'^/favicon\.ico$', favicon),
     
-   (r'(\.js|\.css|\.jpg|\.png)$', default),
+   (r'(\.js|\.css|\.jpg|\.png|\.ico)$', default),
     
    #Anything else should 404
    (r'.*', error_404)
