@@ -13,7 +13,7 @@ def profile(request):
     """, (username,))
     
     user = q.fetchone()
-
+    print("test")
     if not user or not username:
         return request.redirect_response("/404.html")
     

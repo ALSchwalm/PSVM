@@ -26,16 +26,19 @@ class Request(object):
         user = is_login(self.environ)
 
         if user:
+            name = user.username[:20] + ".." if len(user.username) > 22 else user.username
+            
             page = re.sub(r'(<ul id="title_links">.*?</ul>)',
                           r'''
                           <form action="/logout" method="post">
                           <ul id="title_links">
                           <li><a href="/index.html">Home</a></li>
                           <li><a href="/search.html">Search</a></li>
-                          <li><a href="/profile.html?username={username}">{username}</a></li>
+                          <li><a href="/profile.html?username={full_username}">{username}</a></li>
                           <li><a href="javascript:void(0)" onclick="$(this).closest('form').submit();">Logout</a></li>
                           </ul></form>'''.format(
-                              username=user.username),
+                              username=name,
+                              full_username=user.username),
                           page,
                           flags=re.MULTILINE | re.DOTALL)
             

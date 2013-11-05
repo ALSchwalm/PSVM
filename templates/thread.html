@@ -12,10 +12,11 @@ SyntaxHighlighter.defaults["toolbar"] = false;
 SyntaxHighlighter.all();
 </script>
 
-<a href="index.html">Main</a> &gt;
-<a href="category.html?category_id={category_id}"> {category_name}</a> &gt;
-<a href="thread.html?thread_id={thread_id}"> {thread_title} </a>
-<br>
+<div class="path">
+  <a href="index.html">Main</a> &gt;
+  <a href="category.html?category_id={category_id}"> {category_name}</a> &gt;
+  <a href="thread.html?thread_id={thread_id}"> {thread_title} </a>
+</div>
 
 
 {posts}
@@ -32,7 +33,7 @@ SyntaxHighlighter.all();
 
 <table border="1" id="format_help">
   <tr>
-    <td>code</td>
+    <th>code</th>
     <td>[code](python)
       <br>
       print "example"
@@ -42,7 +43,7 @@ SyntaxHighlighter.all();
     <td><pre class="brush: python;"> print "test" </pre></td>
   </tr>
   <tr>
-    <td>link</td>
+    <th>link</th>
     <td>[link](http://www.google.com)
       <br>
       Link to google

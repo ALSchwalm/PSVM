@@ -53,20 +53,23 @@
     color:#333;
 }
 
-.thread_op{
-    float:right;
-    margin-right:5px;
+.thread table{
+    border:none;
+    border-collapse:collapse;
+    table-layout: fixed;
+}
+
+.thread td{
+    padding: 0;
+    border:none;
+    overflow:hidden;
+    text-overflow: ellipsis;
 }
 
 .thread_op a{
     text-decoration:underline;
 }
 
-.thread_timestamp{
-    float:right;
-}
-
-    
 .thread_link{
     margin-left:15px;
     margin-top:10px;

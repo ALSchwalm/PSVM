@@ -28,12 +28,17 @@
 .nav{
 	float:right;
 	width:40%;
+        white-space: nowrap;
 }
 
 .nav ul{
     float:right;
-    margin-right:10%;
-    padding-top:4%;
+    padding-right:8%;
+    padding-top:8%;
+    white-space: nowrap;
+    padding-left:0px;
+    -webkit-margin-before:0em;
+    -webkit-margin-after:0em;
 }
 .nav ul li{
     color:#a6c2d9;
@@ -41,6 +46,7 @@
     list-style:none;
     margin-right: 10px;
     float:left;
+    white-space: nowrap;
 }
 .nav ul li a{
     color:#a6c2d9;

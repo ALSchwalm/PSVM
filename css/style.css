@@ -13,30 +13,51 @@
     background-color:white;
 }
 
+.path {
+    max-width:300px;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.path a{
+    text-decoration:none;
+}
+
+.path a:hover{
+    text-decoration:underline;
+}
+
 .post {
     border: ridge 2px #48485a;
     margin: 5px;
     position:relative;
     display: block;
+    z-index:1;
 }
 
 .user_info {
     border-right: dotted 1px black;
     margin: 2px;
-    width: 100px;
+    width: 150px;
     text-align: center;
     float:left;
     height:100%;
     position:absolute;
     left:0px;
+    overflow:hidden;
+    text-overflow: ellipsis;
 }
 
 .comment_body {
     position:relative;
-    left: 120px;
-    width: 85%;
-    overflow: auto;
+    left: 170px;
+    width:85%;
     min-height:50px;
+    white-space: nowrap
+    word-wrap: break-word;
+    overflow:auto;
+    z-index:2;
 }
 
 .clear {
@@ -44,13 +65,19 @@
 }
 
 .edit_button {
-    float:right;
-    margin-top:-25px;
-    margin-right:5px;
+    position:absolute;
+    right:5px;
+    bottom:5px;
+    z-index:3;
 }
 
-td{
+#format_help td{
     max-width: 300px;
+    padding:10px;
+}
+
+#format_help{
+    border:none;
 }
 
 #format_help{
