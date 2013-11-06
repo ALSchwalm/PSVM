@@ -37,6 +37,12 @@ def parse_markup(comment_body):
                           r'<a href=\1>\2</a>', 
                           comment_body,
                           flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
+
+    comment_body = re.sub(r"\[image\]\((.*?)\)\[\\image\]",
+                          r'<img class="user_image" src="\1">',
+                          comment_body,
+                          flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
+    
     comment_body = re.sub(r"\n", "</br>", comment_body)
 
     return comment_body

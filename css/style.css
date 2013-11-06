@@ -71,8 +71,14 @@
     z-index:3;
 }
 
+.user_image {
+    max-width:400px;
+    height: auto;
+    width: 100%;
+}
+
 #format_help td{
-    max-width: 300px;
+    max-width: 400px;
     padding:10px;
 }
 
