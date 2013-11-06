@@ -8,25 +8,24 @@ def search(request):
 
     q = database.execute("""
 
-    SELECT DISTINCT * FROM comments
+    SELECT DISTINCT comments.thread_id,
+                    title,
+                    count(comments.thread_id) FROM comments
     LEFT OUTER JOIN
     threads ON
     threads.thread_id = comments.thread_id
-    LEFT OUTER JOIN
-    users ON
-    users.user_id = threads.op_id
     WHERE body LIKE ?
+    GROUP BY comments.thread_id
 
     """, (r"%" + str(query) + r"%",)).fetchall()
-
+    
     content = ""
     if query:
         for result in q:
-            content += templates["thread_link"].format(
+            content += templates["search_link"].format(
                 thread_id=result["thread_id"],
                 title=result["title"],
-                username=result["username"],
-                timestamp=result["timestamp"])
+                count=result[2])
 
     if content:
         page = templates["search"].format(results=content)

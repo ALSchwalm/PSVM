@@ -29,4 +29,6 @@ templates = {#open page templates
     "message_link" : open("templates/message_link.html").read(),
     "full_message" : open("templates/full_message.html").read(),
     "post" : open("templates/post.html").read(),
-    "category" : open("templates/category.html").read()}
+    "category" : open("templates/category.html").read(),
+    "search_link" : open("templates/search_link.html").read()
+}
