@@ -22,10 +22,17 @@
 
 .path a{
     text-decoration:none;
+    color:black;
 }
 
 .path a:hover{
     text-decoration:underline;
+    color:black;
+}
+
+.path a:visited {
+    text-decoration:underline;
+    color:black;
 }
 
 .post {
@@ -48,6 +55,15 @@
     overflow:hidden;
     text-overflow: ellipsis;
 }
+
+.user_info a{
+    color:black;
+}
+
+.user_info a:visited {
+    color:black;
+}
+
 
 .comment_body {
     position:relative;
