@@ -33,7 +33,7 @@ def error_404(request):
                                               ('Content-Length', str(len(page)))],
                             page)
 
-urls = [
+urls = (
    (r'^/verify/[0-9a-f]{128}$', verify),
    (r'^/forgot\.html(\?.*|$)', forgot),
    (r'^/forgot$', forgot_post),
@@ -66,7 +66,7 @@ urls = [
     
    #Anything else should 404
    (r'.*', error_404)
-]
+)
 
 def application(environ, start_response):
    path = environ["PATH_INFO"]
