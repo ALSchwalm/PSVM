@@ -49,7 +49,7 @@ def profile_picture(request):
     user = is_login(request.environ)
 
     if not user:
-        return request.redirect_response("/404.html")
+        return request.redirect_response("/login.html?prompt=restricted")
     
     if request.fileitem.filename:
    
