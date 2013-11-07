@@ -8,9 +8,12 @@ class Request(object):
         self.environ = environ
         self.start_response = start_response
         self.is_post = False
+
+        self.query_string = parse_qs(environ["QUERY_STRING"])
+        self.page_name = environ["PATH_INFO"]
         
         if environ["REQUEST_METHOD"] == "POST":
-            try:
+            if self.page_name == "/profile_picture":
                 self.form = FieldStorage(fp=environ['wsgi.input'], 
                                          environ=environ, 
                                          keep_blank_values=True)
@@ -18,7 +21,7 @@ class Request(object):
                 #A nested FieldStorage instance holds the file
                 self.fileitem = self.form["file"]
                 
-            except KeyError:
+            else:
                 request_body_size = int(environ.get('CONTENT_LENGTH', 0))
                 request_body = environ['wsgi.input'].read(request_body_size)
                 self.options = parse_qs(request_body)
@@ -26,9 +29,6 @@ class Request(object):
         
         else:
             self.options = []
-
-        self.query_string = parse_qs(environ["QUERY_STRING"])
-        self.page_name = environ["PATH_INFO"]
 
     def default_response(self, page):
         user = is_login(self.environ)
