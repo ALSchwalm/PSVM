@@ -1,6 +1,7 @@
 <div class="post" id="post_{post_id}">
   <div class="user_info">
-    <a href="profile.html?username={username}">{username}</a>
+    <a href="profile.html?username={username}">{username}</a><br>
+    <img class="avatar" src="profile/{username}.png" onerror='this.style.display = "none"'>
   </div>
   <div class="comment_body"><p>{content}</p></div>
   <span class="edit_button">{edit}</span>

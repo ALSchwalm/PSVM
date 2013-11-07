@@ -1,4 +1,4 @@
-from cgi import parse_qs
+from cgi import parse_qs, FieldStorage
 from mimetypes import guess_type
 from settings import *
 from login import *
@@ -10,17 +10,25 @@ class Request(object):
         self.is_post = False
         
         if environ["REQUEST_METHOD"] == "POST":
-            request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-            request_body = environ['wsgi.input'].read(request_body_size)
-            self.options = parse_qs(request_body)
-            self.is_post = True
+            try:
+                self.form = FieldStorage(fp=environ['wsgi.input'], 
+                                         environ=environ, 
+                                         keep_blank_values=True)
             
+                #A nested FieldStorage instance holds the file
+                self.fileitem = self.form["file"]
+                
+            except KeyError:
+                request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+                request_body = environ['wsgi.input'].read(request_body_size)
+                self.options = parse_qs(request_body)
+                self.is_post = True
+        
         else:
             self.options = []
 
         self.query_string = parse_qs(environ["QUERY_STRING"])
         self.page_name = environ["PATH_INFO"]
-        
 
     def default_response(self, page):
         user = is_login(self.environ)

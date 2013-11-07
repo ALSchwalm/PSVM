@@ -10,12 +10,18 @@ def search(request):
 
     SELECT DISTINCT comments.thread_id,
                     title,
-                    count(comments.thread_id) FROM comments
+                    count(comments.thread_id),
+                    threads.category_id,
+                    name FROM comments
     LEFT OUTER JOIN
     threads ON
     threads.thread_id = comments.thread_id
+    LEFT OUTER JOIN
+    categories ON
+    threads.category_id = categories.category_id
     WHERE body LIKE ?
     GROUP BY comments.thread_id
+    ORDER BY count(comments.thread_id) DESC
 
     """, (r"%" + str(query) + r"%",)).fetchall()
     
@@ -25,14 +31,19 @@ def search(request):
             content += templates["search_link"].format(
                 thread_id=result["thread_id"],
                 title=result["title"],
+                category=result["name"],
+                category_id=result["category_id"],
                 count=result[2])
 
-    if content:
-        page = templates["search"].format(results=content)
+    if content and query:
+        page = templates["search"].format(results=content,
+                                          title="Search results for '" + str(query) + "'")
     elif query:
-        page = templates["search"].format(results="No results found")
+        page = templates["search"].format(results="",
+                                          title="No results found for '" + str(query) + "'")
     else:
-        page = templates["search"].format(results="")
+        page = templates["search"].format(results="",
+                                          title="")
 
     return request.default_response(page)
 

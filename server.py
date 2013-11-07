@@ -61,6 +61,7 @@ urls = (
    (r'^/logout$', logout),
    (r'^/new_post$', new_post),
    (r'^/edit/post_\d+', edit_post),
+   (r'^/profile_picture$', profile_picture),
     
    (r'(\.js|\.css|\.jpg|\.png|\.ico)$', default),
     
