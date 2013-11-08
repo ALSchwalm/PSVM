@@ -19,7 +19,7 @@ def search(request):
     LEFT OUTER JOIN
     categories ON
     threads.category_id = categories.category_id
-    WHERE body LIKE ?
+    WHERE raw LIKE ?
     GROUP BY comments.thread_id
     ORDER BY count(comments.thread_id) DESC
 
