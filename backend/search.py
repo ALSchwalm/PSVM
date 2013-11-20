@@ -1,10 +1,10 @@
-
+from xml.sax.saxutils import escape
 from database import *
 from settings import *
 
 def search(request):
 
-    query = request.query_string.get("query", [""])[0]
+    query = escape(request.query_string.get("query", [""])[0])
 
     q = database.execute("""
 
@@ -26,7 +26,7 @@ def search(request):
     """, (r"%" + str(query) + r"%",)).fetchall()
     
     content = ""
-    if query:
+    if query and query != "%":
         for result in q:
             content += templates["search_link"].format(
                 thread_id=result["thread_id"],
@@ -48,6 +48,6 @@ def search(request):
     return request.default_response(page)
 
 def search_post(request):
-    query = request.options.get("query", [""])[0]
-    
-    return request.redirect_response("/search.html?query="+str(query))
+    query = escape(str(request.options.get("query", [""])[0]))
+
+    return request.redirect_response("/search.html?query="+query)

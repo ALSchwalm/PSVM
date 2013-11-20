@@ -59,6 +59,7 @@ urls = (
    (r'^/$', redirect_index),
    (r'^/logout$', logout),
    (r'^/new_post$', new_post),
+   (r'^/delete_post$', delete_post),
    (r'^/edit/post_\d+', edit_post),
    (r'^/profile_picture$', profile_picture),
     

@@ -87,6 +87,13 @@
     z-index:3;
 }
 
+.delete_button {
+    position:absolute;
+    right:45px;
+    bottom:5px;
+    z-index:3;
+}
+
 .user_image {
     max-width:400px;
     height: auto;

@@ -1,8 +1,40 @@
 from xml.sax.saxutils import escape
+from re import findall
 from settings import *
 from database import *
 from login import *
 from markup import *
+
+
+def delete_post(request):
+    user = is_login(request.environ)
+    comment_id = request.options.get("comment_id", [-1])[0]
+    comment_id = re.findall(r"_(.*)", comment_id)[0]
+    url = request.options.get("url", [""])[0]
+
+    q = database.execute("""
+
+    SELECT * FROM  comments
+    WHERE comment_id = ?
+
+    """, (comment_id,))
+
+    result = q.fetchone()
+    
+    
+    if user and result and str(result["user_id"]) == str(user.user_id):
+        
+        q = database.execute("""
+
+        DELETE FROM comments
+        WHERE comment_id = ?
+
+        """, (comment_id,))
+        
+        return request.redirect_response(url)
+
+    else:
+        return request.redirect_response("/login.html?prompt=restricted")
 
 def add_post(thread_id, user_id, post, unescaped):
     
@@ -28,12 +60,15 @@ def compose_posts(thread_id, user):
     post_string = ""
     for post in posts:
         edit_button = ""
+        delete_button = ""
         if user and (str(post["user_id"]) == str(user.user_id) or user.admin):
             edit_button = '<a href="javascript:void(0)">Edit</a>'
+            delete_button = '<a href="javascript:void(0)">Delete</a>'
         post_string += templates["post"].format(username=post['username'],
                                                 content=post['body'],
                                                 post_id=post['comment_id'],
-                                                edit=edit_button)
+                                                edit=edit_button,
+                                                delete=delete_button)
     return post_string
                     
 def new_post(request):

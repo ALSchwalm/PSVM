@@ -18,8 +18,16 @@ $( document ).ready(function() {
     });
     });
 });
-    
+
+    $('.delete_button').click(function () {
+        var tag = $($(this).parents(".post"));
+        var div = tag.children(".comment_body");
+        var id = tag.attr("id");
+        $.post("/delete_post", {"comment_id" : id, "url" : document.URL});
+    });
 });
+
+
 		    
 
 

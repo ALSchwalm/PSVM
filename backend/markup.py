@@ -33,8 +33,8 @@ def parse_markup(comment_body):
                                   count = 1,
                                   flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
 
-    comment_body = re.sub(r"\[link\]\((.*?)\)(.*?)\[\\link\]", 
-                          r'<a href=\1>\2</a>', 
+    comment_body = re.sub(r"\[link\]\s*\((.*?)\)(.*?)\[\\link\]", 
+                          r'<a href=\1>\2</a>',
                           comment_body,
                           flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
 
