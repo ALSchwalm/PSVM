@@ -38,7 +38,7 @@ def parse_markup(comment_body):
                           comment_body,
                           flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
 
-    comment_body = re.sub(r"\[image\]\((.*?)\)\[\\image\]",
+    comment_body = re.sub(r"\[image\]\s*\((.*?)\)\s*\[\\image\]",
                           r'<img class="user_image" src="\1">',
                           comment_body,
                           flags=re.MULTILINE | re.DOTALL | re.IGNORECASE)
