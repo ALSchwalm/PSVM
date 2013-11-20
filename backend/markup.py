@@ -3,7 +3,7 @@ import re
 from xml.sax.saxutils import unescape
 from database import *
 
-SUPPORTED_LANGUAGES = ("cpp", "python")
+SUPPORTED_LANGUAGES = ("cpp", "python", "perl", "ruby")
 
 def parse_markup(comment_body):
     for language in SUPPORTED_LANGUAGES:

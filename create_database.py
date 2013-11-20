@@ -77,6 +77,8 @@ c.executescript("""
 
 INSERT INTO categories VALUES( NULL, 'C++');
 INSERT INTO categories VALUES( NULL, 'Python');
+INSERT INTO categories VALUES( NULL, 'Perl');
+INSERT INTO categories VALUES( NULL, 'Ruby');
 INSERT INTO categories VALUES( NULL, 'General');
 
 """)

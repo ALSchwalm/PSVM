@@ -13,7 +13,9 @@ values = {'run' : True,
 
 LANGUAGE_MAP = defaultdict(str, {
     "python" : "Python",
-    "cpp" : "C++"
+    "cpp" : "C++",
+    "perl" : "Perl", 
+    "ruby" : "Ruby"
 })
 
 def execute(request):

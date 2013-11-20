@@ -1,0 +1,111 @@
+
+
+\documentclass[12pt]{scrartcl}
+\usepackage{graphicx}
+\usepackage{pdfpages}
+
+\begin{document}
+
+\input{./title.tex}
+
+\section{Team Responsibilities}
+
+\begin{description}
+\item [Requirements Presentation] - Martin Kinsey
+\item [Design Presentation] - Adam Schwalm, Andrew LaFrance
+\item [Final Presentation] - Tyler Bertrand, Eli Hunnicutt
+\vspace{4mm}
+\item [Adam Schwalm] - Backend Design, Server work
+\item [Eli Hunnicutt] - Javascript Management, Design
+\item [Andrew LaFrance, Martin Kinsey] - Graphic Design, Frontend Design work
+\item [Tyler Bertrand] - Database Design, Management
+\end{description}
+
+\section{Account Information}
+
+\begin{description}
+\item [Group account username] - dcsp05
+\item [Group account password] - keyboardkowboys
+\end{description}
+
+As the group project utilized python's built-in sqlite3 module, we did not connect
+to the mySQL database. sqlite3 does not support passwords, and so there is no
+password for the database.
+
+\section{File Structure Layout}
+
+The {\bfseries PSVM} folder contains all of the files used to run the server
+as well as create the database. Running {\bfseries server.py} will start the
+server while executing {\bfseries create\_database.py} will setup the database
+in a default state.
+
+The folder structure within {\bfseries PSVM} is as follows:
+
+\begin{description}
+\item [backend] - Holds the python files used by the server
+\item [css] - Holds the css used to style the pages
+\item [js] - Holds the javascript used to achieve some animations / redirects on the website
+\item [templates] - Holds the html templates used when generating the dynamic pages
+\item [docs] - Holds the LaTeX used to generate the various documents
+\end{description}
+
+\section{Database Design}
+
+\textbf{users} \hfill \textbf{comments}\\*
+*user\_id \hfill *comment\_id\\*
+username \hfill \#thread\_id\\*
+pass\_hash \hfill body\\*
+email \hfill raw\\*
+admin \hfill timestamp\\*
+verified \hfill \#user\_id\\*
+timestamp \\*
+\\*
+\textbf{categories} \hfill \textbf{code\_samples}\\*
+*category\_id \hfill *sample\_id\\*
+name \hfill language\\*
+\hfill raw\\*
+\hfill body\\*
+
+\textbf{threads} \hfill \textbf{messages}\\*
+*thread\_id \hfill *message\_id\\*
+\#category\_id \hfill body\\*
+title \hfill \#from\_id\\*
+\#op\_id \hfill \#to\_id\\*
+timestamp \hfill timestamp\\*
+
+\section{Completed Requirements}
+
+\begin{enumerate}
+\item Create Account (Required)
+\item Login to  Account (Required)
+\item Browse Posts (Required)
+\item Create Thread (Required)
+\item Edit Posts (Required)
+\item Create Subforum (Required)
+\item Change Password (Required)
+\item Edit Profile (Required)
+\item View User Profile (Required)
+\item Search Subforum (Required)
+\item Upload User Image (Medium)
+\item Embeded HTML (Medium)
+\end{enumerate}
+
+\section{Uncompleted Requirements}
+
+Due to time constraints it was necessary to drop certain administrator
+privileges, though these effects (such as banning uses) can still be
+achieved by modifying the database directly.
+
+Additionally, the 'signature' as dropped from the uses profile.
+
+\section{Implementation}
+
+The core of the implementation of the project was a mirror of the popular
+django web framework for python. The requests are first sent to the core
+dispatching function handled by python's WSGI module. Request objects
+(a custom class) are then created from the WSGI request. This is mostly for
+our convenience. These request objects are dispatched using regular expressions
+to the appropriate module function. These functions construct the response
+and reply to the request.
+
+\end{document}
